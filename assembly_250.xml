@@ -1,0 +1,35 @@
+<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd">
+
+  <id>protoc-jar-with-dependencies</id>
+  <formats>
+    <format>jar</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <dependencySets>
+    <dependencySet>
+      <outputDirectory>/</outputDirectory>
+      <useProjectArtifact>true</useProjectArtifact>
+	  <useTransitiveDependencies>true</useTransitiveDependencies>
+      <unpack>true</unpack>
+      <scope>runtime</scope>
+    </dependencySet>
+  </dependencySets>
+  <files>
+    <file>
+      <source>bin_250/win32/protoc.exe</source>
+	  <outputDirectory>/bin/win32</outputDirectory>
+    </file>
+    <!--
+    <file>
+      <source>bin_250/linux/protoc</source>
+	  <outputDirectory>/bin/linux</outputDirectory>
+    </file>
+    <file>
+      <source>bin_250/mac/protoc</source>
+	  <outputDirectory>/bin/mac</outputDirectory>
+    </file>
+    -->
+  </files>
+</assembly>
