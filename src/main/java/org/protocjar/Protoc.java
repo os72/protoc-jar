@@ -40,22 +40,21 @@ public class Protoc
 	}
 
 	static File extractProtoc() throws IOException {
-		String protocStr = "protoc";
 		String resourcePath = null; // for jar
 		String filePath = null; // for test
 
 		String osName = System.getProperty("os.name").toLowerCase();
 		if (osName.startsWith("win")) {
-			resourcePath = "/bin/win32/" + protocStr + ".exe";
-			filePath = sProtocFilePath + "/win32/" + protocStr + ".exe";
+			resourcePath = "/bin/win32/protoc.exe";
+			filePath = sProtocFilePath + "/win32/protoc.exe";
 		}
 		else if (osName.startsWith("linux")) {
-			resourcePath = "/bin/linux/";
-			filePath = sProtocFilePath + "/linux/";
+			resourcePath = "/bin/linux/protoc";
+			filePath = sProtocFilePath + "/linux/protoc";
 		}
 		else if (osName.startsWith("mac")) {
-			resourcePath = "/bin/mac/";
-			filePath = sProtocFilePath + "/mac/";
+			resourcePath = "/bin/mac/protoc";
+			filePath = sProtocFilePath + "/mac/protoc";
 		}
 		else {
 			throw new IOException("Unsupported platform: " + osName);
@@ -65,7 +64,7 @@ public class Protoc
 		InputStream is = clazz.getResourceAsStream(resourcePath);
 		if (is == null) is = new FileInputStream(filePath);
 		
-		File temp = File.createTempFile(protocStr, ".exe");
+		File temp = File.createTempFile("protoc", ".exe");
 		temp.setExecutable(true);
 		FileOutputStream os = new FileOutputStream(temp);
 		streamCopy(is, os);
