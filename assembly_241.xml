@@ -25,11 +25,9 @@
       <source>bin_241/linux/protoc</source>
 	  <outputDirectory>/bin/linux</outputDirectory>
     </file>
-    <!--
     <file>
       <source>bin_241/mac/protoc</source>
 	  <outputDirectory>/bin/mac</outputDirectory>
     </file>
-    -->
   </files>
 </assembly>
