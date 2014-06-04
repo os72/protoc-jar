@@ -39,9 +39,14 @@ public class Protoc
 
 	public static int runProtoc(String[] args) throws IOException, InterruptedException {
 		File protocTemp = extractProtoc();
-		
+		int exitCode = runProtoc(protocTemp.getAbsolutePath(), args);
+		protocTemp.delete();
+		return exitCode;
+	}
+
+	public static int runProtoc(String cmd, String[] args) throws IOException, InterruptedException {	
 		List<String> protocCmd = new ArrayList<String>();
-		protocCmd.add(protocTemp.getAbsolutePath());
+		protocCmd.add(cmd);
 		protocCmd.addAll(Arrays.asList(args));
 		ProcessBuilder pb = new ProcessBuilder(protocCmd);
 		log("executing: " + protocCmd);
@@ -51,7 +56,6 @@ public class Protoc
 		new Thread(new StreamCopier(protoc.getErrorStream(), System.err)).start();
 		int exitCode = protoc.waitFor();
 		
-		if (protocTemp != null) protocTemp.delete();
 		return exitCode;
 	}
 
