@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.protocjar;
+package com.github.os72.protocjar;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
