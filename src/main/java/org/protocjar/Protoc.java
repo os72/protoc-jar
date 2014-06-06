@@ -123,5 +123,5 @@ public class Protoc
 		private OutputStream mOut;
 	}
 
-	static String sProtocFilePath = "bin_241";
+	static String sProtocFilePath = ".";
 }

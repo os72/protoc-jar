@@ -1,0 +1,54 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.protocjar</groupId>
+  <artifactId>protoc-jar</artifactId>
+  <packaging>jar</packaging>
+  <version>2.5.0-SNAPSHOT</version>
+  <name>protoc-jar</name>
+
+  <dependencies>
+    <!-- test -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+	<sourceDirectory>../src/main/java</sourceDirectory>
+	<testSourceDirectory>../src/test/java</testSourceDirectory>
+	<plugins>
+		<plugin>
+		  <groupId>org.apache.maven.plugins</groupId>
+		  <artifactId>maven-assembly-plugin</artifactId>
+		  <configuration>
+			<appendAssemblyId>false</appendAssemblyId>
+			<archive>
+			  <manifest>
+				<mainClass>org.protocjar.Protoc</mainClass>
+			  </manifest>
+			  <manifestEntries>
+				<Build-Id>${project.name}-${project.version}-${maven.build.timestamp}</Build-Id>
+			  </manifestEntries>
+			</archive>
+			<descriptors>
+				<descriptor>assembly.xml</descriptor>
+			</descriptors>
+		  </configuration>
+		  <executions>
+			<execution>
+				<id>make-assembly</id>
+				<phase>package</phase>
+				<goals>
+				  <goal>single</goal>
+				</goals>
+			 </execution>
+		  </executions>
+		</plugin>
+	</plugins>
+  </build>
+
+</project>

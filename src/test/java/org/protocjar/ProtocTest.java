@@ -31,15 +31,12 @@ public class ProtocTest extends TestCase
     }
 
     public void testRunProtoc() throws Exception {
-    	String[] args = {"--help"};
+        //Protoc.sProtocFilePath = "bin_241"; // adjust path to run in Eclipse
+        
+        String[] args = {"--help"};
         Protoc.runProtoc(args);
 		
 		args[0] = "--version";
-        Protoc.sProtocFilePath = "bin_241"; // test only
-        Protoc.runProtoc(args);
-		
-		args[0] = "--version";
-        Protoc.sProtocFilePath = "bin_250"; // test only
-        Protoc.runProtoc(args);
+        Protoc.runProtoc(args);		
     }
 }

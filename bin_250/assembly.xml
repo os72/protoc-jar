@@ -18,15 +18,15 @@
   </dependencySets>
   <files>
     <file>
-      <source>bin_250/win32/protoc.exe</source>
+      <source>win32/protoc.exe</source>
 	  <outputDirectory>/bin/win32</outputDirectory>
     </file>
     <file>
-      <source>bin_250/linux/protoc</source>
+      <source>linux/protoc</source>
 	  <outputDirectory>/bin/linux</outputDirectory>
     </file>
     <file>
-      <source>bin_250/mac/protoc</source>
+      <source>mac/protoc</source>
 	  <outputDirectory>/bin/mac</outputDirectory>
     </file>
   </files>
