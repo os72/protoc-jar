@@ -7,6 +7,35 @@
   <packaging>jar</packaging>
   <version>2.4.1.0-SNAPSHOT</version>
   <name>protoc-jar</name>
+  <url>https://github.com/os72/protoc-jar</url>
+  <description>Protocol Buffers compiler - executable JAR and API</description>
+
+  <parent>
+	<groupId>org.sonatype.oss</groupId>
+	<artifactId>oss-parent</artifactId>
+	<version>9</version>
+  </parent>
+
+  <licenses>
+	<license>
+	  <name>The Apache Software License, Version 2.0</name>
+	  <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+	  <distribution>repo</distribution>
+	</license>
+  </licenses>
+
+  <developers>
+	<developer>
+	  <id>os72</id>
+	  <name>Oliver Suciu</name>
+	</developer>
+  </developers>
+
+  <scm>
+	<connection>scm:git:git@github.com:os72/protoc-jar.git</connection>
+	<developerConnection>scm:git:git@github.com:os72/protoc-jar.git</developerConnection>
+	<url>git@github.com:os72/protoc-jar.git</url>
+  </scm>
 
   <dependencies>
     <!-- test -->
@@ -50,13 +79,24 @@
 			 </execution>
 		  </executions>
 		</plugin>
-
 		<plugin>
 		  <groupId>org.apache.maven.plugins</groupId>
 		  <artifactId>maven-source-plugin</artifactId>
 		  <executions>
 			<execution>
 			  <id>attach-sources</id>
+				<goals>
+				 <goal>jar</goal>
+				</goals>
+			</execution>
+		  </executions>
+		</plugin>
+		<plugin>
+		  <groupId>org.apache.maven.plugins</groupId>
+		  <artifactId>maven-javadoc-plugin</artifactId>
+		  <executions>
+			<execution>
+			  <id>attach-javadoc</id>
 				<goals>
 				 <goal>jar</goal>
 				</goals>
