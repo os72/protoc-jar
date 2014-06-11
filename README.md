@@ -24,7 +24,6 @@ import com.github.os72.protocjar.Protoc;
 ...
 String[] args = {"--help"};
 Protoc.runProtoc(args);
-
 ```
 
 #### Maven dependency
