@@ -1,7 +1,7 @@
 protoc-jar
 ==========
 
-Protocol Buffers compiler - executable JAR and API
+Protocol Buffers compiler - executable JAR and API. Available on Maven Central
 
 Simple convenience JAR that embeds protoc compiler binaries for Linux, Mac/OSX, and Windows. See the Protocol Buffers site for details: https://code.google.com/p/protobuf/
 
