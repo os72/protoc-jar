@@ -16,18 +16,9 @@
       <scope>runtime</scope>
     </dependencySet>
   </dependencySets>
-  <files>
-    <file>
-      <source>win32/protoc.exe</source>
-	  <outputDirectory>/bin/win32</outputDirectory>
-    </file>
-    <file>
-      <source>linux/protoc</source>
-	  <outputDirectory>/bin/linux</outputDirectory>
-    </file>
-    <file>
-      <source>mac/protoc</source>
-	  <outputDirectory>/bin/mac</outputDirectory>
-    </file>
-  </files>
+  <fileSets>
+    <fileSet>
+      <directory>bin_250</directory>
+    </fileSet>
+  </fileSets>
 </assembly>

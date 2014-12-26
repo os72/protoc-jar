@@ -16,25 +16,7 @@
 
 package com.github.os72.protocjar;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
-public class ProtocTest extends TestCase
+public class ProtocVersion
 {
-    public ProtocTest(String testName) {
-        super(testName);
-    }
-
-    public static Test suite() {
-        return new TestSuite(ProtocTest.class);
-    }
-
-    public void testRunProtoc() throws Exception {
-        String[] args = {"--help"};
-        Protoc.runProtoc(args);
-		
-		args[0] = "--version";
-        Protoc.runProtoc(args);		
-    }
+	public static final String PROTOC_VERSION = "250";
 }

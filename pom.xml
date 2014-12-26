@@ -3,10 +3,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.github.os72</groupId>
-  <artifactId>protoc-jar-build</artifactId>
-  <packaging>pom</packaging>
-  <version>1.1-SNAPSHOT</version>
-  <name>protoc-jar-build</name>
+  <artifactId>protoc-jar</artifactId>
+  <packaging>jar</packaging>
+  <version>2.5.0.1-SNAPSHOT</version>
+  <name>protoc-jar</name>
   <url>https://github.com/os72/protoc-jar</url>
   <description>Protocol Buffers compiler - executable JAR and API</description>
 
@@ -37,11 +37,6 @@
 	<url>git@github.com:os72/protoc-jar.git</url>
   </scm>
 
-  <modules>
-    <module>bin_241</module>
-    <module>bin_250</module>
-  </modules>
-
   <dependencies>
     <!-- test -->
     <dependency>
@@ -51,5 +46,61 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <build>
+	<plugins>
+		<plugin>
+		  <groupId>org.apache.maven.plugins</groupId>
+		  <artifactId>maven-assembly-plugin</artifactId>
+		  <configuration>
+			<appendAssemblyId>false</appendAssemblyId>
+			<archive>
+			  <manifest>
+				<mainClass>com.github.os72.protocjar.Protoc</mainClass>
+			  </manifest>
+			  <manifestEntries>
+				<Build-Id>${project.name}-${project.version}-${maven.build.timestamp}</Build-Id>
+			  </manifestEntries>
+			</archive>
+			<descriptors>
+				<descriptor>assembly.xml</descriptor>
+			</descriptors>
+		  </configuration>
+		  <executions>
+			<execution>
+				<id>make-assembly</id>
+				<phase>package</phase>
+				<goals>
+				  <goal>single</goal>
+				</goals>
+			 </execution>
+		  </executions>
+		</plugin>
+		<plugin>
+		  <groupId>org.apache.maven.plugins</groupId>
+		  <artifactId>maven-source-plugin</artifactId>
+		  <executions>
+			<execution>
+			  <id>attach-sources</id>
+				<goals>
+				 <goal>jar</goal>
+				</goals>
+			</execution>
+		  </executions>
+		</plugin>
+		<plugin>
+		  <groupId>org.apache.maven.plugins</groupId>
+		  <artifactId>maven-javadoc-plugin</artifactId>
+		  <executions>
+			<execution>
+			  <id>attach-javadoc</id>
+				<goals>
+				 <goal>jar</goal>
+				</goals>
+			</execution>
+		  </executions>
+		</plugin>
+	</plugins>
+  </build>
 
 </project>
