@@ -65,20 +65,18 @@ public class Protoc
 
 		String osName = System.getProperty("os.name").toLowerCase();
 		if (osName.startsWith("win")) {
-			resourcePath = "/bin/win32/protoc.exe";
 			filePath = sProtocFilePath + "/win32/protoc.exe";
 		}
 		else if (osName.startsWith("linux")) {
-			resourcePath = "/bin/linux/protoc";
 			filePath = sProtocFilePath + "/linux/protoc";
 		}
 		else if (osName.startsWith("mac")) {
-			resourcePath = "/bin/mac/protoc";
 			filePath = sProtocFilePath + "/mac/protoc";
 		}
 		else {
 			throw new IOException("Unsupported platform: " + osName);
 		}
+		resourcePath = "/" + filePath;
 		
 		Class<Protoc> clazz = Protoc.class;
 		InputStream is = clazz.getResourceAsStream(resourcePath);
