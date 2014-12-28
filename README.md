@@ -8,16 +8,16 @@ Simple convenience JAR that embeds protoc compiler binaries for Linux, Mac/OSX, 
 Maven code generation plugin based on this: https://github.com/os72/protoc-jar-maven-plugin
 
 Branches
-* https://github.com/os72/protoc-jar/tree/master (master - protobuf 2.5.0)
+* https://github.com/os72/protoc-jar/tree/protobuf_250 (protobuf 2.5.0)
 * https://github.com/os72/protoc-jar/tree/protobuf_241 (protobuf 2.4.1)
 
 #### Usage - executable
 ```
-$ java -jar protoc-jar-2.4.1.0.jar --version
+$ java -jar protoc-jar-2.4.1.1.jar --version
 protoc-jar: executing: [C:\cygwin64\tmp\protoc8420137375795222513.exe, --version]
 libprotoc 2.4.1
 
-$ java -jar protoc-jar-2.5.0.0.jar --version
+$ java -jar protoc-jar-2.5.0.1.jar --version
 protoc-jar: executing: [C:\cygwin64\tmp\protoc4520968910109233475.exe, --version]
 libprotoc 2.5.0
 ```
@@ -37,7 +37,7 @@ For protobuf 2.4.1
 <dependency>
   <groupId>com.github.os72</groupId>
   <artifactId>protoc-jar</artifactId>
-  <version>2.4.1.0</version>
+  <version>2.4.1.1</version>
 </dependency>
 ```
 
@@ -46,6 +46,6 @@ For protobuf 2.5.0
 <dependency>
   <groupId>com.github.os72</groupId>
   <artifactId>protoc-jar</artifactId>
-  <version>2.5.0.0</version>
+  <version>2.5.0.1</version>
 </dependency>
 ```
