@@ -38,13 +38,14 @@ public class Protoc
 	}
 
 	public static int runProtoc(String[] args) throws IOException, InterruptedException {
+		log("protoc version: " + ProtocVersion.PROTOC_VERSION + ", detected platform: " + getPlatform());
 		File protocTemp = extractProtoc();
 		int exitCode = runProtoc(protocTemp.getAbsolutePath(), args);
 		protocTemp.delete();
 		return exitCode;
 	}
 
-	public static int runProtoc(String cmd, String[] args) throws IOException, InterruptedException {	
+	public static int runProtoc(String cmd, String[] args) throws IOException, InterruptedException {
 		List<String> protocCmd = new ArrayList<String>();
 		protocCmd.add(cmd);
 		protocCmd.addAll(Arrays.asList(args));
@@ -64,17 +65,18 @@ public class Protoc
 		String filePath = null; // for test
 
 		String osName = System.getProperty("os.name").toLowerCase();
+		String osArch = System.getProperty("os.arch").toLowerCase();
 		if (osName.startsWith("win")) {
 			filePath = sProtocFilePath + "/win32/protoc.exe";
 		}
-		else if (osName.startsWith("linux")) {
+		else if (osName.startsWith("linux") && osArch.contains("64")) {
 			filePath = sProtocFilePath + "/linux/protoc";
 		}
-		else if (osName.startsWith("mac")) {
+		else if (osName.startsWith("mac") && osArch.contains("64")) {
 			filePath = sProtocFilePath + "/mac/protoc";
 		}
 		else {
-			throw new IOException("Unsupported platform: " + osName);
+			throw new IOException("Unsupported platform: " + getPlatform());
 		}
 		resourcePath = "/" + filePath;
 		
@@ -95,6 +97,10 @@ public class Protoc
 		int read = 0;
 		byte[] buf = new byte[4096];
 		while ((read = in.read(buf)) > 0) out.write(buf, 0, read);		
+	}
+
+	static String getPlatform() {
+		return System.getProperty("os.name").toLowerCase() + "/" + System.getProperty("os.arch").toLowerCase();
 	}
 
 	static void log(String msg) {
