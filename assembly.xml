@@ -18,7 +18,7 @@
   </dependencySets>
   <fileSets>
     <fileSet>
-      <directory>bin_261</directory>
+      <directory>bin_250</directory>
     </fileSet>
   </fileSets>
 </assembly>
