@@ -8,18 +8,26 @@ Simple convenience JAR that embeds protoc compiler binaries for Linux, Mac/OSX, 
 Maven code generation plugin based on this: https://github.com/os72/protoc-jar-maven-plugin
 
 Branches
-* https://github.com/os72/protoc-jar/tree/protobuf_250 (protobuf 2.5.0)
 * https://github.com/os72/protoc-jar/tree/protobuf_241 (protobuf 2.4.1)
+* https://github.com/os72/protoc-jar/tree/protobuf_250 (protobuf 2.5.0)
+* https://github.com/os72/protoc-jar/tree/protobuf_261 (protobuf 2.6.1)
 
 #### Usage - executable
 ```
-$ java -jar protoc-jar-2.4.1.1.jar --version
-protoc-jar: executing: [C:\cygwin64\tmp\protoc8420137375795222513.exe, --version]
+$ java -jar target/protoc-jar-2.4.1.2.jar --version
+protoc-jar: protoc version: 241, detected platform: windows 8/amd64
+protoc-jar: executing: [C:\cygwin64\tmp\protoc8662657713800064679.exe, --version]
 libprotoc 2.4.1
 
-$ java -jar protoc-jar-2.5.0.1.jar --version
-protoc-jar: executing: [C:\cygwin64\tmp\protoc4520968910109233475.exe, --version]
+$ java -jar target/protoc-jar-2.5.0.2.jar --version
+protoc-jar: protoc version: 250, detected platform: windows 8/amd64
+protoc-jar: executing: [C:\cygwin64\tmp\protoc1183088349500847030.exe, --version]
 libprotoc 2.5.0
+
+$ java -jar target/protoc-jar-2.6.1.2.jar --version
+protoc-jar: protoc version: 261, detected platform: windows 8/amd64
+protoc-jar: executing: [C:\cygwin64\tmp\protoc512014267302891752.exe, --version]
+libprotoc 2.6.1
 ```
 
 #### Usage - API
@@ -37,7 +45,7 @@ For protobuf 2.4.1
 <dependency>
   <groupId>com.github.os72</groupId>
   <artifactId>protoc-jar</artifactId>
-  <version>2.4.1.1</version>
+  <version>2.4.1.2</version>
 </dependency>
 ```
 
@@ -46,6 +54,15 @@ For protobuf 2.5.0
 <dependency>
   <groupId>com.github.os72</groupId>
   <artifactId>protoc-jar</artifactId>
-  <version>2.5.0.1</version>
+  <version>2.5.0.2</version>
+</dependency>
+```
+
+For protobuf 2.6.1
+```xml
+<dependency>
+  <groupId>com.github.os72</groupId>
+  <artifactId>protoc-jar</artifactId>
+  <version>2.6.1.2</version>
 </dependency>
 ```
