@@ -1,6 +1,9 @@
 protoc-jar release notes
 ========================
 
+#### 2.4.1.4, 2.5.0.4, 2.6.1.4 (26-Mar-2015)
+* Minor fixes, no functional changes
+
 #### 2.4.1.3, 2.5.0.3, 2.6.1.3 (31-Dec-2014)
 * Rebuilt Linux binaries on older toolchain for better portability
 
