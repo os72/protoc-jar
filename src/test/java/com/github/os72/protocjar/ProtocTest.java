@@ -16,25 +16,16 @@
 
 package com.github.os72.protocjar;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.junit.Test;
 
-public class ProtocTest extends TestCase
+public class ProtocTest
 {
-    public ProtocTest(String testName) {
-        super(testName);
-    }
-
-    public static Test suite() {
-        return new TestSuite(ProtocTest.class);
-    }
-
-    public void testRunProtoc() throws Exception {
-        String[] args = {"--help"};
-        Protoc.runProtoc(args);
+	@Test
+	public void testRunProtoc() throws Exception {
+		String[] args = {"--help"};
+		Protoc.runProtoc(args);
 		
 		args[0] = "--version";
-        Protoc.runProtoc(args);		
-    }
+		Protoc.runProtoc(args);		
+	}
 }
