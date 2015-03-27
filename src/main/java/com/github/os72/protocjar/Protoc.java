@@ -30,7 +30,8 @@ public class Protoc
 {
 	public static void main(String[] args) {
 		try {
-			runProtoc(args);
+			int exitCode = runProtoc(args);
+			System.exit(exitCode);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -80,17 +81,22 @@ public class Protoc
 		}
 		resourcePath = "/" + filePath;
 		
-		Class<Protoc> clazz = Protoc.class;
-		InputStream is = clazz.getResourceAsStream(resourcePath);
+		FileOutputStream os = null;
+		InputStream is = Protoc.class.getResourceAsStream(resourcePath);
 		if (is == null) is = new FileInputStream(filePath);
 		
-		File temp = File.createTempFile("protoc", ".exe");
-		temp.setExecutable(true);
-		FileOutputStream os = new FileOutputStream(temp);
-		streamCopy(is, os);
-		is.close();
-		os.close();
-		return temp;
+		try {
+			File temp = File.createTempFile("protoc", ".exe");
+			temp.setExecutable(true);
+			temp.deleteOnExit();
+			os = new FileOutputStream(temp);
+			streamCopy(is, os);
+			return temp;
+		}
+		finally {
+			if (is != null) is.close();
+			if (os != null) os.close();
+		}
 	}
 
 	static void streamCopy(InputStream in, OutputStream out) throws IOException {

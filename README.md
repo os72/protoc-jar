@@ -3,7 +3,7 @@ protoc-jar
 
 Protocol Buffers compiler - executable JAR and API. Available on Maven Central: http://central.maven.org/maven2/com/github/os72/protoc-jar/
 
-Simple convenience JAR that embeds protoc compiler binaries for Linux, Mac/OSX, and Windows. See the Protocol Buffers site for details: https://code.google.com/p/protobuf/
+Simple convenience JAR that embeds protoc compiler binaries for Linux, Mac/OSX, and Windows. See the Protocol Buffers site for details: https://github.com/google/protobuf
 
 Maven code generation plugin based on this: https://github.com/os72/protoc-jar-maven-plugin
 
