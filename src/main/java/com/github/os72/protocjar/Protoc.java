@@ -39,9 +39,13 @@ public class Protoc
 	}
 
 	public static int runProtoc(String[] args) throws IOException, InterruptedException {
-		log("protoc version: " + ProtocVersion.PROTOC_VERSION + ", detected platform: " + getPlatform());
-		File protocTemp = extractProtoc();
-		int exitCode = runProtoc(protocTemp.getAbsolutePath(), args);
+		if (args.length == 0) {
+			throw new IllegalArgumentException("The first parameters must indicate the protoc version to be used.");
+		}
+		String version = args[0];
+		log("protoc version: " + version + ", detected platform: " + getPlatform());
+		File protocTemp = extractProtoc(version);
+		int exitCode = runProtoc(protocTemp.getAbsolutePath(), Arrays.copyOfRange(args, 1, args.length));
 		protocTemp.delete();
 		return exitCode;
 	}
@@ -61,20 +65,21 @@ public class Protoc
 		return exitCode;
 	}
 
-	static File extractProtoc() throws IOException {
+	static File extractProtoc(String version) throws IOException {
 		String resourcePath = null; // for jar
 		String filePath = null; // for test
+		String basePath = "bin_" + version.replace(".", "");
 
 		String osName = System.getProperty("os.name").toLowerCase();
 		String osArch = System.getProperty("os.arch").toLowerCase();
 		if (osName.startsWith("win")) {
-			filePath = sProtocFilePath + "/win32/protoc.exe";
+			filePath = basePath + "/win32/protoc.exe";
 		}
 		else if (osName.startsWith("linux") && osArch.contains("64")) {
-			filePath = sProtocFilePath + "/linux/protoc";
+			filePath = basePath + "/linux/protoc";
 		}
 		else if (osName.startsWith("mac") && osArch.contains("64")) {
-			filePath = sProtocFilePath + "/mac/protoc";
+			filePath = basePath + "/mac/protoc";
 		}
 		else {
 			throw new IOException("Unsupported platform: " + getPlatform());
@@ -83,8 +88,7 @@ public class Protoc
 		
 		FileOutputStream os = null;
 		InputStream is = Protoc.class.getResourceAsStream(resourcePath);
-		if (is == null) is = new FileInputStream(filePath);
-		
+
 		try {
 			File temp = File.createTempFile("protoc", ".exe");
 			temp.setExecutable(true);
@@ -133,5 +137,4 @@ public class Protoc
 		private OutputStream mOut;
 	}
 
-	static final String sProtocFilePath = "bin_" + ProtocVersion.PROTOC_VERSION;
 }
