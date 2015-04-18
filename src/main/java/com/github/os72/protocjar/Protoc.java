@@ -24,7 +24,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Protoc
 {
@@ -39,27 +41,28 @@ public class Protoc
 	}
 
 	public static int runProtoc(String[] args) throws IOException, InterruptedException {
-		String protocVersion = "-v261";
+		String protocVersion = "261";
 		List<String> argList = new ArrayList<String>();
 		for (String arg : args) {
-			if (arg.equals("-v241") || arg.equals("-v250") || arg.equals("-v261")) protocVersion = arg;
-			else argList.add(arg);
+			String v = sVersionMap.get(arg);
+			if (v != null) protocVersion = v; else argList.add(arg);
 		}
-		args = new String[argList.size()];
-		argList.toArray(args);
 		
-		protocVersion = protocVersion.substring(2);
 		log("protoc version: " + protocVersion + ", detected platform: " + getPlatform());
 		File protocTemp = extractProtoc(protocVersion);
-		int exitCode = runProtoc(protocTemp.getAbsolutePath(), args);
+		int exitCode = runProtoc(protocTemp.getAbsolutePath(), argList);
 		protocTemp.delete();
 		return exitCode;
 	}
 
 	public static int runProtoc(String cmd, String[] args) throws IOException, InterruptedException {
+		return runProtoc(cmd, Arrays.asList(args));
+	}
+
+	public static int runProtoc(String cmd, List<String> argList) throws IOException, InterruptedException {
 		List<String> protocCmd = new ArrayList<String>();
 		protocCmd.add(cmd);
-		protocCmd.addAll(Arrays.asList(args));
+		protocCmd.addAll(argList);
 		ProcessBuilder pb = new ProcessBuilder(protocCmd);
 		log("executing: " + protocCmd);
 		
@@ -144,5 +147,13 @@ public class Protoc
 		private OutputStream mOut;
 	}
 
-	static final String sProtocFilePath = "bin_" + ProtocVersion.PROTOC_VERSION;
+	static Map<String,String> sVersionMap = new HashMap<String,String>();
+	static {
+		sVersionMap.put("-v2.6.1", "261");
+		sVersionMap.put("-v2.5.0", "250");
+		sVersionMap.put("-v2.4.1", "241");
+		sVersionMap.put("-v261", "261");
+		sVersionMap.put("-v250", "250");
+		sVersionMap.put("-v241", "241");
+	}
 }
