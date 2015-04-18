@@ -63,7 +63,7 @@
 			  </manifestEntries>
 			</archive>
 			<descriptors>
-				<descriptor>bin_261/assembly.xml</descriptor>
+				<descriptor>assembly.xml</descriptor>
 			</descriptors>
 		  </configuration>
 		  <executions>

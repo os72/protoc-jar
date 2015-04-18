@@ -39,8 +39,18 @@ public class Protoc
 	}
 
 	public static int runProtoc(String[] args) throws IOException, InterruptedException {
-		log("protoc version: " + ProtocVersion.PROTOC_VERSION + ", detected platform: " + getPlatform());
-		File protocTemp = extractProtoc();
+		String protocVersion = "-v261";
+		List<String> argList = new ArrayList<String>();
+		for (String arg : args) {
+			if (arg.equals("-v241") || arg.equals("-v250") || arg.equals("-v261")) protocVersion = arg;
+			else argList.add(arg);
+		}
+		args = new String[argList.size()];
+		argList.toArray(args);
+		
+		protocVersion = protocVersion.substring(2);
+		log("protoc version: " + protocVersion + ", detected platform: " + getPlatform());
+		File protocTemp = extractProtoc(protocVersion);
 		int exitCode = runProtoc(protocTemp.getAbsolutePath(), args);
 		protocTemp.delete();
 		return exitCode;
@@ -61,20 +71,21 @@ public class Protoc
 		return exitCode;
 	}
 
-	static File extractProtoc() throws IOException {
+	static File extractProtoc(String protocVersion) throws IOException {
+		String protocFilePath = "bin_" + protocVersion;
 		String resourcePath = null; // for jar
 		String filePath = null; // for test
 
 		String osName = System.getProperty("os.name").toLowerCase();
 		String osArch = System.getProperty("os.arch").toLowerCase();
 		if (osName.startsWith("win")) {
-			filePath = sProtocFilePath + "/win32/protoc.exe";
+			filePath = protocFilePath + "/win32/protoc.exe";
 		}
 		else if (osName.startsWith("linux") && osArch.contains("64")) {
-			filePath = sProtocFilePath + "/linux/protoc";
+			filePath = protocFilePath + "/linux/protoc";
 		}
 		else if (osName.startsWith("mac") && osArch.contains("64")) {
-			filePath = sProtocFilePath + "/mac/protoc";
+			filePath = protocFilePath + "/mac/protoc";
 		}
 		else {
 			throw new IOException("Unsupported platform: " + getPlatform());
