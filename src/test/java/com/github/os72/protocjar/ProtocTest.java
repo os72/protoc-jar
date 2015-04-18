@@ -22,10 +22,25 @@ public class ProtocTest
 {
 	@Test
 	public void testRunProtoc() throws Exception {
-		String[] args = {"--help"};
-		Protoc.runProtoc(args);
-		
-		args[0] = "--version";
-		Protoc.runProtoc(args);		
+		{
+			String[] args = {"--help"};
+			Protoc.runProtoc(args);
+		}
+		{
+			String[] args = {"--version"};
+			Protoc.runProtoc(args);
+		}
+		{
+			String[] args = {"--version", "-v2.4.1"};
+			Protoc.runProtoc(args);
+		}
+		{
+			String[] args = {"--version", "-v2.5.0"};
+			Protoc.runProtoc(args);
+		}
+		{
+			String[] args = {"--version", "-v2.6.1"};
+			Protoc.runProtoc(args);
+		}		
 	}
 }
