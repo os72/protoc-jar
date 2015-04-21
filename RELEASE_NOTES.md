@@ -1,6 +1,9 @@
 protoc-jar release notes
 ========================
 
+#### 2.x.5 (20-Apr-2015)
+* Single package to include all versions
+
 #### 2.4.1.4, 2.5.0.4, 2.6.1.4 (26-Mar-2015)
 * Minor fixes, no functional changes
 
