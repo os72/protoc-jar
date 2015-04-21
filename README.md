@@ -15,9 +15,9 @@ See also
 * https://github.com/google/protobuf (Protocol Buffers site)
 
 Version support
-* protobuf 2.4.1: -v2.4.1, -v241
-* protobuf 2.5.0: -v2.5.0, -v250
-* protobuf 2.6.1: -v2.6.1, -v261
+* protobuf 2.4.1: `-v2.4.1`, `-v241`
+* protobuf 2.5.0: `-v2.5.0`, `-v250`
+* protobuf 2.6.1: `-v2.6.1`, `-v261`
 
 #### Usage - executable
 ```
