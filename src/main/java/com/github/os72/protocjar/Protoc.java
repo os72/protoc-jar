@@ -41,7 +41,7 @@ public class Protoc
 	}
 
 	public static int runProtoc(String[] args) throws IOException, InterruptedException {
-		String protocVersion = "261";
+		String protocVersion = "300";
 		List<String> argList = new ArrayList<String>();
 		for (String arg : args) {
 			String v = sVersionMap.get(arg);
@@ -149,9 +149,11 @@ public class Protoc
 
 	static Map<String,String> sVersionMap = new HashMap<String,String>();
 	static {
+		sVersionMap.put("-v3.0.0", "300");
 		sVersionMap.put("-v2.6.1", "261");
 		sVersionMap.put("-v2.5.0", "250");
 		sVersionMap.put("-v2.4.1", "241");
+		sVersionMap.put("-v300", "300");
 		sVersionMap.put("-v261", "261");
 		sVersionMap.put("-v250", "250");
 		sVersionMap.put("-v241", "241");

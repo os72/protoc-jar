@@ -42,5 +42,9 @@ public class ProtocTest
 			String[] args = {"--version", "-v2.6.1"};
 			Protoc.runProtoc(args);
 		}		
+		{
+			String[] args = {"--version", "-v3.0.0"};
+			Protoc.runProtoc(args);
+		}		
 	}
 }

@@ -26,5 +26,8 @@
     <fileSet>
       <directory>bin_261</directory>
     </fileSet>
+    <fileSet>
+      <directory>bin_300</directory>
+    </fileSet>
   </fileSets>
 </assembly>
