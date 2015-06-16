@@ -1,6 +1,9 @@
 protoc-jar release notes
 ========================
 
+#### 3.0.0-a3 (15-Jun-2015)
+* Add support for protoc 3.0.0-alpha-3
+
 #### 2.x.5 (20-Apr-2015)
 * Single package to include all versions
 
