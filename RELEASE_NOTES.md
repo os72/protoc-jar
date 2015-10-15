@@ -1,6 +1,10 @@
 protoc-jar release notes
 ========================
 
+#### 3.0.0-b1 (15-Oct-2015)
+* Upgrade to protoc 3.0.0-beta-1
+* All 3.0.0-beta-1 binaries from Google (maven central)
+
 #### 3.0.0-a3 (15-Jun-2015)
 * Add support for protoc 3.0.0-alpha-3
 
