@@ -99,18 +99,19 @@ public class Protoc
 		InputStream is = Protoc.class.getResourceAsStream(resourcePath);
 		if (is == null) is = new FileInputStream(filePath);
 		
+		File temp = null;
 		try {
-			File temp = File.createTempFile("protoc", ".exe");
-			temp.setExecutable(true);
-			temp.deleteOnExit();
+			temp = File.createTempFile("protoc", ".exe");
 			os = new FileOutputStream(temp);
 			streamCopy(is, os);
-			return temp;
 		}
 		finally {
 			if (is != null) is.close();
 			if (os != null) os.close();
 		}
+		temp.setExecutable(true);
+		temp.deleteOnExit();
+		return temp;
 	}
 
 	static void streamCopy(InputStream in, OutputStream out) throws IOException {
