@@ -5,7 +5,7 @@
   <groupId>com.github.os72</groupId>
   <artifactId>protoc-jar</artifactId>
   <packaging>jar</packaging>
-  <version>3.0.0-b2.1-SNAPSHOT</version>
+  <version>3.0.0-b2.1</version>
   <name>protoc-jar</name>
   <url>https://github.com/os72/protoc-jar</url>
   <description>Protocol Buffers compiler - executable JAR and API</description>
