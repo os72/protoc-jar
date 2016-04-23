@@ -8,7 +8,7 @@ Available on Maven Central: http://central.maven.org/maven2/com/github/os72/prot
 
 ---
 
-Simple convenience JAR that embeds protoc compiler binaries for Linux, Mac/OSX, and Windows, providing some portability across the major platforms
+Simple convenience JAR that embeds protoc compiler binaries for Linux, Mac/OSX, and Windows, providing some portability across the major platforms. At runtime the library detects the platform and executes the corresponding protoc binary. Supports protoc versions 2.4.1, 2.5.0, 2.6.1, 3.0.0
 
 See also
 * https://github.com/os72/protoc-jar-maven-plugin (maven plugin for protobuf code generation)
