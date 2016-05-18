@@ -60,5 +60,27 @@ public class ProtocTest
 		}
 	}
 
+	@Test
+	public void testRunProtocCompileShade() throws Exception {
+		{
+			String outDir = "target/test-protoc-shaded-241";
+			new File(outDir).mkdirs();
+			String[] args = {"-v2.4.1", "--java_shaded_out="+outDir, sProtoFile};
+			Protoc.runProtoc(args);
+		}
+		{
+			String outDir = "target/test-protoc-shaded-250";
+			new File(outDir).mkdirs();
+			String[] args = {"-v2.5.0", "--java_shaded_out="+outDir, sProtoFile};
+			Protoc.runProtoc(args);
+		}
+		{
+			String outDir = "target/test-protoc-shaded-261";
+			new File(outDir).mkdirs();
+			String[] args = {"-v2.6.1", "--java_shaded_out="+outDir, sProtoFile};
+			Protoc.runProtoc(args);
+		}
+	}
+
 	static final String sProtoFile = "src/test/resources/PersonSchema.proto";
 }
