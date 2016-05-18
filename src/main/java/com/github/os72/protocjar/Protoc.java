@@ -16,12 +16,15 @@
 
 package com.github.os72.protocjar;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -41,16 +44,15 @@ public class Protoc
 	}
 
 	public static int runProtoc(String[] args) throws IOException, InterruptedException {
-		String protocVersion = "300";
-		List<String> argList = new ArrayList<String>();
+		String protocVersion = ProtocVersion.PROTOC_VERSION;
 		for (String arg : args) {
 			String v = sVersionMap.get(arg);
-			if (v != null) protocVersion = v; else argList.add(arg);
+			if (v != null) protocVersion = v;
 		}
 		
 		log("protoc version: " + protocVersion + ", detected platform: " + getPlatform());
 		File protocTemp = extractProtoc(protocVersion);
-		int exitCode = runProtoc(protocTemp.getAbsolutePath(), argList);
+		int exitCode = runProtoc(protocTemp.getAbsolutePath(), Arrays.asList(args));
 		protocTemp.delete();
 		return exitCode;
 	}
@@ -60,9 +62,22 @@ public class Protoc
 	}
 
 	public static int runProtoc(String cmd, List<String> argList) throws IOException, InterruptedException {
+		String protocVersion = ProtocVersion.PROTOC_VERSION;
+		String javaShadedOutDir = null;
+		
 		List<String> protocCmd = new ArrayList<String>();
 		protocCmd.add(cmd);
-		protocCmd.addAll(argList);
+		for (String arg : argList) {
+			if (arg.startsWith("--java_shaded_out=")) {
+				javaShadedOutDir = arg.split("--java_shaded_out=")[1];
+				protocCmd.add("--java_out=" + javaShadedOutDir);
+			}
+			else {
+				String v = sVersionMap.get(arg);
+				if (v != null) protocVersion = v; else protocCmd.add(arg);				
+			}
+		}
+		
 		ProcessBuilder pb = new ProcessBuilder(protocCmd);
 		log("executing: " + protocCmd);
 		
@@ -71,7 +86,43 @@ public class Protoc
 		new Thread(new StreamCopier(protoc.getErrorStream(), System.err)).start();
 		int exitCode = protoc.waitFor();
 		
+		if (javaShadedOutDir != null) {
+			log("shading (version " + protocVersion + "): " + javaShadedOutDir);
+			doShading(new File(javaShadedOutDir), protocVersion);
+		}
+		
 		return exitCode;
+	}
+
+	public static void doShading(File dir, String version) throws IOException {
+		for (File file : dir.listFiles()) {
+			if (file.isDirectory()) {
+				doShading(file, version);
+			}
+			else if (file.getName().endsWith(".java")) {
+				//log(file.getPath());
+				File tmpFile = null;
+				PrintWriter pw = null;
+				BufferedReader br = null;
+				try {
+					tmpFile = File.createTempFile(file.getName(), null);
+					pw = new PrintWriter(tmpFile);
+					br = new BufferedReader(new FileReader(file));
+					String line;
+					while ((line = br.readLine()) != null) {
+						pw.println(line.replace("com.google.protobuf", "com.github.os72.protobuf" + version));
+					}
+					pw.close();
+					br.close();
+					file.delete();
+					tmpFile.renameTo(file);
+				}
+				finally {
+					if (br != null) { try {br.close();} catch (Exception e) {} }
+					if (pw != null) { try {pw.close();} catch (Exception e) {} }
+				}
+			}
+		}
 	}
 
 	static File extractProtoc(String protocVersion) throws IOException {
