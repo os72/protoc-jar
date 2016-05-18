@@ -4,15 +4,18 @@ protoc-jar
 Protocol Buffers compiler - multi-platform executable JAR and API.
 Available on Maven Central: http://central.maven.org/maven2/com/github/os72/protoc-jar/
 
-[![Maven Central](https://img.shields.io/badge/maven%20central-3.0.0--b2.1-brightgreen.svg)](http://search.maven.org/#artifactdetails|com.github.os72|protoc-jar|3.0.0-b2.1|)
+[![Maven Central](https://img.shields.io/badge/maven%20central-3.0.0--b3-brightgreen.svg)](http://search.maven.org/#artifactdetails|com.github.os72|protoc-jar|3.0.0-b3|)
 
 ---
 
 Simple convenience JAR that embeds protoc compiler binaries for Linux, Mac/OSX, and Windows, providing some portability across the major platforms. At runtime the library detects the platform and executes the corresponding protoc binary. Supports protoc versions 2.4.1, 2.5.0, 2.6.1, 3.0.0
 
 See also
-* https://github.com/os72/protoc-jar-maven-plugin (maven plugin for protobuf code generation)
-* https://github.com/google/protobuf (Protocol Buffers site)
+* https://github.com/os72/protoc-jar-maven-plugin
+* https://github.com/os72/protobuf-java-shaded-241
+* https://github.com/os72/protobuf-java-shaded-250
+* https://github.com/os72/protobuf-java-shaded-261
+* https://github.com/google/protobuf
 
 Version support
 * protobuf 2.4.1: `-v2.4.1`, `-v241`
@@ -22,25 +25,33 @@ Version support
 
 #### Usage - executable
 ```
-$ java -jar protoc-jar-3.0.0-b2.1.jar -v2.4.1 --version
+$ java -jar protoc-jar-3.0.0-b3.jar -v2.4.1 --version
 protoc-jar: protoc version: 241, detected platform: windows 8/amd64
 protoc-jar: executing: [C:\cygwin64\tmp\protoc4075756100699382860.exe, --version]
 libprotoc 2.4.1
 
-$ java -jar protoc-jar-3.0.0-b2.1.jar -v2.5.0 --version
+$ java -jar protoc-jar-3.0.0-b3.jar -v2.5.0 --version
 protoc-jar: protoc version: 250, detected platform: windows 8/amd64
 protoc-jar: executing: [C:\cygwin64\tmp\protoc7121779431303398811.exe, --version]
 libprotoc 2.5.0
 
-$ java -jar protoc-jar-3.0.0-b2.1.jar -v2.6.1 --version
+$ java -jar protoc-jar-3.0.0-b3.jar -v2.6.1 --version
 protoc-jar: protoc version: 261, detected platform: windows 8/amd64
 protoc-jar: executing: [C:\cygwin64\tmp\protoc2894421465727929903.exe, --version]
 libprotoc 2.6.1
 
-$ java -jar protoc-jar-3.0.0-b2.1.jar -v3.0.0 --version
+$ java -jar protoc-jar-3.0.0-b3.jar -v3.0.0 --version
 protoc-jar: protoc version: 300, detected platform: windows 8/amd64
 protoc-jar: executing: [C:\cygwin64\tmp\protoc4836429907662708747.exe, --version]
 libprotoc 3.0.0
+```
+
+#### Usage - executable, apply shading for use with protobuf-java-shaded-241 (option --java_shaded_out)
+```
+$ java -jar protoc-jar-3.0.0-b3.jar -v2.4.1 --java_shaded_out=out PersonSchema.proto
+protoc-jar: protoc version: 241, detected platform: windows 8/amd64
+protoc-jar: executing: [C:\cygwin64\tmp\protoc3155568375885699334.exe, --java_out=out, PersonSchema.proto]
+protoc-jar: shading (version 241): out
 ```
 
 #### Usage - API
@@ -57,6 +68,6 @@ Protoc.runProtoc(args);
 <dependency>
   <groupId>com.github.os72</groupId>
   <artifactId>protoc-jar</artifactId>
-  <version>3.0.0-b2.1</version>
+  <version>3.0.0-b3</version>
 </dependency>
 ```

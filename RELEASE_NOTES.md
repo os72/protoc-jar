@@ -1,6 +1,10 @@
 protoc-jar release notes
 ========================
 
+#### 3.0.0-b3 (18-May-2016)
+* Upgrade to protoc 3.0.0-beta-3
+* Support shading of generated code for use with protobuf-java-shaded-[241|250|261] (option --java_shaded_out)
+
 #### 3.0.0-b2.1 (27-Feb-2016)
 * Fix for text file busy issue #8 (reported for Ubuntu 14.04)
 
