@@ -95,6 +95,7 @@ public class Protoc
 	}
 
 	public static void doShading(File dir, String version) throws IOException {
+		if (dir.listFiles() == null) return;
 		for (File file : dir.listFiles()) {
 			if (file.isDirectory()) {
 				doShading(file, version);
