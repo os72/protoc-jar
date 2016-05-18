@@ -16,12 +16,14 @@
 
 package com.github.os72.protocjar;
 
+import java.io.File;
+
 import org.junit.Test;
 
 public class ProtocTest
 {
 	@Test
-	public void testRunProtoc() throws Exception {
+	public void testRunProtocBasic() throws Exception {
 		{
 			String[] args = {"--help"};
 			Protoc.runProtoc(args);
@@ -41,10 +43,22 @@ public class ProtocTest
 		{
 			String[] args = {"--version", "-v2.6.1"};
 			Protoc.runProtoc(args);
-		}		
+		}
 		{
 			String[] args = {"--version", "-v3.0.0"};
 			Protoc.runProtoc(args);
-		}		
+		}
 	}
+
+	@Test
+	public void testRunProtocCompile() throws Exception {
+		{
+			String outDir = "target/test-protoc";
+			new File(outDir).mkdirs();
+			String[] args = {"-v2.4.1", "--java_out="+outDir, sProtoFile};
+			Protoc.runProtoc(args);
+		}
+	}
+
+	static final String sProtoFile = "src/test/resources/PersonSchema.proto";
 }
