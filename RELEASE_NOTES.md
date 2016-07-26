@@ -1,6 +1,9 @@
 protoc-jar release notes
 ========================
 
+#### 3.0.0-b4 (26-Jul-2016)
+* Upgrade to protoc 3.0.0-beta-4
+
 #### 3.0.0-b3 (18-May-2016)
 * Upgrade to protoc 3.0.0-beta-3
 * Support shading of generated code for use with `protobuf-java-shaded-[241|250|261]` (option --java_shaded_out)
