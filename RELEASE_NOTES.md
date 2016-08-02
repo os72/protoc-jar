@@ -1,6 +1,9 @@
 protoc-jar release notes
 ========================
 
+#### 3.0.0 (2-Aug-2016)
+* Upgrade to protoc 3.0.0
+
 #### 3.0.0-b4 (26-Jul-2016)
 * Upgrade to protoc 3.0.0-beta-4
 
