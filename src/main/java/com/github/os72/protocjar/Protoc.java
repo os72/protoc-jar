@@ -50,7 +50,6 @@ public class Protoc
 			if (v != null) protocVersion = v;
 		}
 		
-		log("protoc version: " + protocVersion + ", detected platform: " + getPlatform());
 		File protocTemp = extractProtoc(protocVersion);
 		int exitCode = runProtoc(protocTemp.getAbsolutePath(), Arrays.asList(args));
 		protocTemp.delete();
@@ -126,11 +125,13 @@ public class Protoc
 		}
 	}
 
-	static File extractProtoc(String protocVersion) throws IOException {
+	public static File extractProtoc(String protocVersion) throws IOException {
+		log("protoc version: " + protocVersion + ", detected platform: " + getPlatform());
+		
 		String protocFilePath = "bin_" + protocVersion;
 		String resourcePath = null; // for jar
 		String filePath = null; // for test
-
+		
 		String osName = System.getProperty("os.name").toLowerCase();
 		String osArch = System.getProperty("os.arch").toLowerCase();
 		if (osName.startsWith("win")) {
