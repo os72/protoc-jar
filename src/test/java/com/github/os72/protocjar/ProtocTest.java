@@ -51,11 +51,21 @@ public class ProtocTest
 	}
 
 	@Test
+	public void testStdTypes() throws Exception {
+		{
+			String outDir = "target/test-protoc-stdtypes";
+			new File(outDir).mkdirs();
+			String[] args = {"-v3.0.0", "--include_std_types", "-I.", "--java_out="+outDir, sStdTypeExampleFile};
+			Protoc.runProtoc(args);
+		}
+	}
+
+	@Test
 	public void testRunProtocCompile() throws Exception {
 		{
 			String outDir = "target/test-protoc";
 			new File(outDir).mkdirs();
-			String[] args = {"-v2.4.1", "--java_out="+outDir, sProtoFile};
+			String[] args = {"-v2.4.1", "--java_out="+outDir, sPersonSchemaFile};
 			Protoc.runProtoc(args);
 		}
 	}
@@ -65,22 +75,23 @@ public class ProtocTest
 		{
 			String outDir = "target/test-protoc-shaded-241";
 			new File(outDir).mkdirs();
-			String[] args = {"-v2.4.1", "--java_shaded_out="+outDir, sProtoFile};
+			String[] args = {"-v2.4.1", "--java_shaded_out="+outDir, sPersonSchemaFile};
 			Protoc.runProtoc(args);
 		}
 		{
 			String outDir = "target/test-protoc-shaded-250";
 			new File(outDir).mkdirs();
-			String[] args = {"-v2.5.0", "--java_shaded_out="+outDir, sProtoFile};
+			String[] args = {"-v2.5.0", "--java_shaded_out="+outDir, sPersonSchemaFile};
 			Protoc.runProtoc(args);
 		}
 		{
 			String outDir = "target/test-protoc-shaded-261";
 			new File(outDir).mkdirs();
-			String[] args = {"-v2.6.1", "--java_shaded_out="+outDir, sProtoFile};
+			String[] args = {"-v2.6.1", "--java_shaded_out="+outDir, sPersonSchemaFile};
 			Protoc.runProtoc(args);
 		}
 	}
 
-	static final String sProtoFile = "src/test/resources/PersonSchema.proto";
+	static final String sPersonSchemaFile = "src/test/resources/PersonSchema.proto";
+	static final String sStdTypeExampleFile = "src/test/resources/StdTypeExample.proto";
 }

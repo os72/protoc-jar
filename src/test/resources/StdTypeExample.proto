@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+option java_package = "com.github.os72.protocjar";
+option java_outer_classname = "StdTypeExample";
+
+import "google/protobuf/any.proto";
+import "google/protobuf/timestamp.proto";
+
+message Example {
+  google.protobuf.Any any = 1;
+  google.protobuf.Timestamp ts = 2;
+}
