@@ -29,5 +29,8 @@
     <fileSet>
       <directory>bin_300</directory>
     </fileSet>
+    <fileSet>
+      <directory>include</directory>
+    </fileSet>
   </fileSets>
 </assembly>
