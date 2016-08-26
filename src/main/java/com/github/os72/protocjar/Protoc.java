@@ -45,12 +45,14 @@ public class Protoc
 
 	public static int runProtoc(String[] args) throws IOException, InterruptedException {
 		String protocVersion = ProtocVersion.PROTOC_VERSION;
+		boolean includeStdTypes = false;
 		for (String arg : args) {
 			String v = sVersionMap.get(arg);
 			if (v != null) protocVersion = v;
+			if (arg.equals("--include_std_types")) includeStdTypes = true;
 		}
 		
-		File protocTemp = extractProtoc(protocVersion);
+		File protocTemp = extractProtoc(protocVersion, includeStdTypes);
 		int exitCode = runProtoc(protocTemp.getAbsolutePath(), Arrays.asList(args));
 		protocTemp.delete();
 		return exitCode;
@@ -70,6 +72,10 @@ public class Protoc
 			if (arg.startsWith("--java_shaded_out=")) {
 				javaShadedOutDir = arg.split("--java_shaded_out=")[1];
 				protocCmd.add("--java_out=" + javaShadedOutDir);
+			}
+			else if (arg.equals("--include_std_types")) {
+				String parentDir = new File(cmd).getParent();
+				protocCmd.add("-I" + parentDir + "/include");
 			}
 			else {
 				String v = sVersionMap.get(arg);
@@ -128,43 +134,71 @@ public class Protoc
 	public static File extractProtoc(String protocVersion) throws IOException {
 		log("protoc version: " + protocVersion + ", detected platform: " + getPlatform());
 		
-		String protocFilePath = "bin_" + protocVersion;
-		String resourcePath = null; // for jar
-		String filePath = null; // for test
-		
+		String binVersionDir = "bin_" + protocVersion;
+		String srcFilePath = null;
 		String osName = System.getProperty("os.name").toLowerCase();
 		String osArch = System.getProperty("os.arch").toLowerCase();
 		if (osName.startsWith("win")) {
-			filePath = protocFilePath + "/win32/protoc.exe";
+			srcFilePath = binVersionDir + "/win32/protoc.exe";
 		}
 		else if (osName.startsWith("linux") && osArch.contains("64")) {
-			filePath = protocFilePath + "/linux/protoc";
+			srcFilePath = binVersionDir + "/linux/protoc";
 		}
 		else if (osName.startsWith("mac") && osArch.contains("64")) {
-			filePath = protocFilePath + "/mac/protoc";
+			srcFilePath = binVersionDir + "/mac/protoc";
 		}
 		else {
 			throw new IOException("Unsupported platform: " + getPlatform());
 		}
-		resourcePath = "/" + filePath;
+		
+		File tmpDir = File.createTempFile("protocjar", "");
+		tmpDir.delete(); tmpDir.mkdirs();
+		tmpDir.deleteOnExit();
+		
+		File protocTemp = new File(tmpDir, "protoc.exe");
+		populateFile(srcFilePath, protocTemp);
+		protocTemp.setExecutable(true);
+		protocTemp.deleteOnExit();
+		return protocTemp;
+	}
+
+	public static File extractProtoc(String protocVersion, boolean includeStdTypes) throws IOException {
+		File protocTemp = extractProtoc(protocVersion);
+		if (!includeStdTypes) return protocTemp;
+		
+		File tmpDir = protocTemp.getParentFile();
+		File tmpDirProtos = new File(tmpDir, "include/google/protobuf");
+		tmpDirProtos.mkdirs();
+		tmpDirProtos.getParentFile().getParentFile().deleteOnExit();
+		tmpDirProtos.getParentFile().deleteOnExit();
+		tmpDirProtos.deleteOnExit();
+		
+		for (String srcFilePath : sStdTypes) {
+			File tmpFile = new File(tmpDir, srcFilePath);
+			populateFile(srcFilePath, tmpFile);
+			tmpFile.deleteOnExit();
+		}
+		
+		return protocTemp;
+	}
+
+	static File populateFile(String srcFilePath, File destFile) throws IOException {
+		String resourcePath = "/" + srcFilePath; // resourcePath for jar, srcFilePath for test
 		
 		FileOutputStream os = null;
 		InputStream is = Protoc.class.getResourceAsStream(resourcePath);
-		if (is == null) is = new FileInputStream(filePath);
+		if (is == null) is = new FileInputStream(srcFilePath);
 		
-		File temp = null;
 		try {
-			temp = File.createTempFile("protoc", ".exe");
-			os = new FileOutputStream(temp);
+			os = new FileOutputStream(destFile);
 			streamCopy(is, os);
 		}
 		finally {
 			if (is != null) is.close();
 			if (os != null) os.close();
 		}
-		temp.setExecutable(true);
-		temp.deleteOnExit();
-		return temp;
+		
+		return destFile;
 	}
 
 	static void streamCopy(InputStream in, OutputStream out) throws IOException {
@@ -212,4 +246,18 @@ public class Protoc
 		sVersionMap.put("-v250", "250");
 		sVersionMap.put("-v241", "241");
 	}
+
+	static String[] sStdTypes = {
+		"include/google/protobuf/any.proto",
+		"include/google/protobuf/api.proto",
+		"include/google/protobuf/descriptor.proto",
+		"include/google/protobuf/duration.proto",
+		"include/google/protobuf/empty.proto",
+		"include/google/protobuf/field_mask.proto",
+		"include/google/protobuf/source_context.proto",
+		"include/google/protobuf/struct.proto",
+		"include/google/protobuf/timestamp.proto",
+		"include/google/protobuf/type.proto",
+		"include/google/protobuf/wrappers.proto",
+	};
 }
