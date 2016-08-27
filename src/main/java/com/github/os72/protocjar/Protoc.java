@@ -74,8 +74,8 @@ public class Protoc
 				protocCmd.add("--java_out=" + javaShadedOutDir);
 			}
 			else if (arg.equals("--include_std_types")) {
-				String parentDir = new File(cmd).getParent();
-				protocCmd.add("-I" + parentDir + "/include");
+				File stdTypeDir = new File(new File(cmd).getParentFile().getParentFile(), "include");
+				protocCmd.add("-I" + stdTypeDir.getAbsolutePath());
 			}
 			else {
 				String v = sVersionMap.get(arg);
@@ -154,8 +154,11 @@ public class Protoc
 		File tmpDir = File.createTempFile("protocjar", "");
 		tmpDir.delete(); tmpDir.mkdirs();
 		tmpDir.deleteOnExit();
+		File binDir = new File(tmpDir, "bin");
+		binDir.mkdirs();
+		binDir.deleteOnExit();
 		
-		File protocTemp = new File(tmpDir, "protoc.exe");
+		File protocTemp = new File(binDir, "protoc.exe");
 		populateFile(srcFilePath, protocTemp);
 		protocTemp.setExecutable(true);
 		protocTemp.deleteOnExit();
@@ -166,7 +169,7 @@ public class Protoc
 		File protocTemp = extractProtoc(protocVersion);
 		if (!includeStdTypes) return protocTemp;
 		
-		File tmpDir = protocTemp.getParentFile();
+		File tmpDir = protocTemp.getParentFile().getParentFile();
 		File tmpDirProtos = new File(tmpDir, "include/google/protobuf");
 		tmpDirProtos.mkdirs();
 		tmpDirProtos.getParentFile().getParentFile().deleteOnExit();
