@@ -1,6 +1,9 @@
 protoc-jar release notes
 ========================
 
+#### 3.0.0.1 (28-Aug-2016)
+* Package and support google.protobuf standard types out of the box (option --include_std_types)
+
 #### 3.0.0 (2-Aug-2016)
 * Upgrade to protoc 3.0.0
 
