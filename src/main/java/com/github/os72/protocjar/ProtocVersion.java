@@ -18,5 +18,5 @@ package com.github.os72.protocjar;
 
 public class ProtocVersion
 {
-	public static final String PROTOC_VERSION = "300";
+	public static final String PROTOC_VERSION = "310";
 }
