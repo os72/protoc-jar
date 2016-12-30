@@ -47,8 +47,15 @@ public class ProtocTest
 		{
 			String[] args = {"--version", "-v3.1.0"};
 			Protoc.runProtoc(args);
+		}		
+	}
+
+	@Test
+	public void testRunProtocDownload() throws Exception {
+		{
+			String[] args = {"--version", "-v:com.google.protobuf:protoc:3.1.0"};
+			Protoc.runProtoc(args);
 		}
-		
 	}
 
 	@Test
