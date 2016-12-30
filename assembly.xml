@@ -11,7 +11,7 @@
     <dependencySet>
       <outputDirectory>/</outputDirectory>
       <useProjectArtifact>true</useProjectArtifact>
-	  <useTransitiveDependencies>true</useTransitiveDependencies>
+	  <useTransitiveDependencies>false</useTransitiveDependencies>
       <unpack>true</unpack>
       <scope>runtime</scope>
     </dependencySet>
