@@ -25,11 +25,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Properties;
+
+import kr.motd.maven.os.Detector;
 
 public class Protoc
 {
@@ -44,10 +46,10 @@ public class Protoc
 	}
 
 	public static int runProtoc(String[] args) throws IOException, InterruptedException {
-		String protocVersion = ProtocVersion.PROTOC_VERSION;
+		ProtocVersion protocVersion = ProtocVersion.PROTOC_VERSION;
 		boolean includeStdTypes = false;
 		for (String arg : args) {
-			String v = sVersionMap.get(arg);
+			ProtocVersion v = getVersion(arg);
 			if (v != null) protocVersion = v;
 			if (arg.equals("--include_std_types")) includeStdTypes = true;
 		}
@@ -63,7 +65,7 @@ public class Protoc
 	}
 
 	public static int runProtoc(String cmd, List<String> argList) throws IOException, InterruptedException {
-		String protocVersion = ProtocVersion.PROTOC_VERSION;
+		ProtocVersion protocVersion = ProtocVersion.PROTOC_VERSION;
 		String javaShadedOutDir = null;
 		
 		List<String> protocCmd = new ArrayList<String>();
@@ -78,7 +80,7 @@ public class Protoc
 				protocCmd.add("-I" + stdTypeDir.getAbsolutePath());
 			}
 			else {
-				String v = sVersionMap.get(arg);
+				ProtocVersion v = getVersion(arg);
 				if (v != null) protocVersion = v; else protocCmd.add(arg);				
 			}
 		}
@@ -93,7 +95,7 @@ public class Protoc
 		
 		if (javaShadedOutDir != null) {
 			log("shading (version " + protocVersion + "): " + javaShadedOutDir);
-			doShading(new File(javaShadedOutDir), protocVersion);
+			doShading(new File(javaShadedOutDir), protocVersion.mVersion);
 		}
 		
 		return exitCode;
@@ -131,24 +133,29 @@ public class Protoc
 		}
 	}
 
-	public static File extractProtoc(String protocVersion) throws IOException {
+	public static File extractProtoc(ProtocVersion protocVersion) throws IOException {
 		log("protoc version: " + protocVersion + ", detected platform: " + getPlatform());
 		
-		String binVersionDir = "bin_" + protocVersion;
 		String srcFilePath = null;
-		String osName = System.getProperty("os.name").toLowerCase();
-		String osArch = System.getProperty("os.arch").toLowerCase();
-		if (osName.startsWith("win")) {
-			srcFilePath = binVersionDir + "/win32/protoc.exe";
+		if (protocVersion.mArtifact == null) { // extract embedded protoc
+			String binVersionDir = "bin_" + protocVersion;
+			String osName = System.getProperty("os.name").toLowerCase();
+			String osArch = System.getProperty("os.arch").toLowerCase();
+			if (osName.startsWith("win")) {
+				srcFilePath = binVersionDir + "/win32/protoc.exe";
+			}
+			else if (osName.startsWith("linux") && osArch.contains("64")) {
+				srcFilePath = binVersionDir + "/linux/protoc";
+			}
+			else if (osName.startsWith("mac") && osArch.contains("64")) {
+				srcFilePath = binVersionDir + "/mac/protoc";
+			}
+			else {
+				throw new IOException("Unsupported platform: " + getPlatform());
+			}			
 		}
-		else if (osName.startsWith("linux") && osArch.contains("64")) {
-			srcFilePath = binVersionDir + "/linux/protoc";
-		}
-		else if (osName.startsWith("mac") && osArch.contains("64")) {
-			srcFilePath = binVersionDir + "/mac/protoc";
-		}
-		else {
-			throw new IOException("Unsupported platform: " + getPlatform());
+		else { // download protoc from maven central
+			srcFilePath = downloadProtoc(protocVersion).getAbsolutePath();
 		}
 		
 		File tmpDir = File.createTempFile("protocjar", "");
@@ -165,7 +172,7 @@ public class Protoc
 		return protocTemp;
 	}
 
-	public static File extractProtoc(String protocVersion, boolean includeStdTypes) throws IOException {
+	public static File extractProtoc(ProtocVersion protocVersion, boolean includeStdTypes) throws IOException {
 		File protocTemp = extractProtoc(protocVersion);
 		if (!includeStdTypes) return protocTemp;
 		
@@ -183,6 +190,46 @@ public class Protoc
 		}
 		
 		return protocTemp;
+	}
+
+	public static File downloadProtoc(ProtocVersion protocVersion) throws IOException {				
+		Properties detectorProps = new Properties();
+		new PlatformDetector().doDetect(detectorProps);
+		String platform = detectorProps.getProperty("os.detected.classifier");
+		
+		String exeName = protocVersion.mGroup.replace(".", "/") + "/" +
+				protocVersion.mArtifact + "/" + protocVersion.mVersion + "/" +
+				protocVersion.mArtifact + "-" + protocVersion.mVersion + "-" + platform + ".exe";
+		
+		File tmp = File.createTempFile("protocjar", ""); tmp.delete();
+		File exeFile = new File(tmp.getParentFile(), "protocjar.webcache/" + exeName);
+		exeFile.getParentFile().mkdirs();
+		boolean isNew = exeFile.createNewFile();
+		if (!isNew) {
+			if (System.currentTimeMillis() - exeFile.lastModified() > 60*1000) { // older than 1 min, assume cache is good
+				log("cached: " + exeFile);
+				return exeFile;
+			}
+			exeFile = File.createTempFile("protoc", ".exe"); // cache may not be ready, download to temp file
+			exeFile.deleteOnExit();
+		}
+		
+		URL exeUrl = new URL("http://central.maven.org/maven2/" + exeName);
+		log("downloading: " + exeUrl);
+		
+		InputStream is = null;
+		FileOutputStream os = null;
+		try {
+			is = exeUrl.openStream();
+			os = new FileOutputStream(exeFile);
+			streamCopy(is, os);
+		}
+		finally {
+			if (is != null) is.close();
+			if (os != null) os.close();			
+		}
+		
+		return exeFile;
 	}
 
 	static File populateFile(String srcFilePath, File destFile) throws IOException {
@@ -208,6 +255,10 @@ public class Protoc
 		int read = 0;
 		byte[] buf = new byte[4096];
 		while ((read = in.read(buf)) > 0) out.write(buf, 0, read);		
+	}
+
+	static ProtocVersion getVersion(String spec) {
+		return ProtocVersion.getVersion(spec);
 	}
 
 	static String getPlatform() {
@@ -238,18 +289,21 @@ public class Protoc
 		private OutputStream mOut;
 	}
 
-	static Map<String,String> sVersionMap = new HashMap<String,String>();
-	static {
-		sVersionMap.put("-v3.0.0", "310");
-		sVersionMap.put("-v3.1.0", "310");
-		sVersionMap.put("-v2.6.1", "261");
-		sVersionMap.put("-v2.5.0", "250");
-		sVersionMap.put("-v2.4.1", "241");
-		sVersionMap.put("-v300", "310");
-		sVersionMap.put("-v310", "310");
-		sVersionMap.put("-v261", "261");
-		sVersionMap.put("-v250", "250");
-		sVersionMap.put("-v241", "241");
+	static class PlatformDetector extends Detector
+	{
+		void doDetect(Properties props) {
+	    	detect(props, null);
+		}
+
+		@Override
+		protected void log(String msg) {
+			//System.out.println(msg);
+		}
+
+		@Override
+		protected void logProperty(String name, String value) {
+			//log(name + ": " + value);
+		}
 	}
 
 	static String[] sStdTypes = {
