@@ -5,7 +5,7 @@
   <groupId>com.github.os72</groupId>
   <artifactId>protoc-jar</artifactId>
   <packaging>jar</packaging>
-  <version>3.1.0.1</version>
+  <version>3.1.0.2-SNAPSHOT</version>
   <name>protoc-jar</name>
   <url>https://github.com/os72/protoc-jar</url>
   <description>Protocol Buffers compiler - executable JAR and API</description>
@@ -38,6 +38,12 @@
   </scm>
 
   <dependencies>
+	<dependency>
+	  <groupId>kr.motd.maven</groupId>
+	  <artifactId>os-maven-plugin</artifactId>
+	  <version>1.5.0.Final</version>
+	</dependency>
+
     <!-- test -->
     <dependency>
       <groupId>junit</groupId>
