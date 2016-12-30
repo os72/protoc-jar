@@ -16,7 +16,43 @@
 
 package com.github.os72.protocjar;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ProtocVersion
 {
-	public static final String PROTOC_VERSION = "310";
+	public static final ProtocVersion PROTOC_VERSION = new ProtocVersion(null, null, "310");
+
+	public static ProtocVersion getVersion(String spec) {
+		String v = sVersionMap.get(spec.replace(".", ""));
+		if (v != null) return new ProtocVersion(null, null, v);		
+		String[] as = spec.split(":");
+		if (as.length == 4 && as[0].equals("-v")) return new ProtocVersion(as[1], as[2], as[3]);
+		return null;
+	}
+
+	public ProtocVersion(String group, String artifact, String version) {
+		mGroup = group;
+		mArtifact = artifact;
+		mVersion = version;
+	}
+
+	@Override
+	public String toString() {
+		if (mArtifact == null) return mVersion;
+		return mGroup+":"+mArtifact+":"+mVersion;
+	}
+
+	public final String mGroup;
+	public final String mArtifact;
+	public final String mVersion;
+
+	private static Map<String,String> sVersionMap = new HashMap<String,String>();
+	static {
+		sVersionMap.put("-v310", "310");
+		sVersionMap.put("-v300", "310");
+		sVersionMap.put("-v261", "261");
+		sVersionMap.put("-v250", "250");
+		sVersionMap.put("-v241", "241");
+	}
 }
