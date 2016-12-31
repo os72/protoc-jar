@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.github.os72.protocjar;
 
 import java.io.BufferedReader;
@@ -30,8 +29,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
-
-import kr.motd.maven.os.Detector;
 
 public class Protoc
 {
@@ -194,7 +191,7 @@ public class Protoc
 
 	public static File downloadProtoc(ProtocVersion protocVersion) throws IOException {				
 		Properties detectorProps = new Properties();
-		new PlatformDetector().doDetect(detectorProps);
+		new PlatformDetector().detect(detectorProps, null);
 		String platform = detectorProps.getProperty("os.detected.classifier");
 		
 		String exeName = protocVersion.mGroup.replace(".", "/") + "/" +
@@ -287,23 +284,6 @@ public class Protoc
 
 		private InputStream mIn;
 		private OutputStream mOut;
-	}
-
-	static class PlatformDetector extends Detector
-	{
-		void doDetect(Properties props) {
-	    	detect(props, null);
-		}
-
-		@Override
-		protected void log(String msg) {
-			//System.out.println(msg);
-		}
-
-		@Override
-		protected void logProperty(String name, String value) {
-			//log(name + ": " + value);
-		}
 	}
 
 	static String[] sStdTypes = {
