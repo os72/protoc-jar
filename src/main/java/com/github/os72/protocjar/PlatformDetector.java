@@ -59,7 +59,7 @@ public class PlatformDetector
     private static final Pattern VERSION_REGEX = Pattern.compile("((\\d+)\\.(\\d+)).*");
     private static final Pattern REDHAT_MAJOR_VERSION_REGEX = Pattern.compile("(\\d+)");
 
-    protected void detect(Properties props, List<String> classifierWithLikes) {
+    public void detect(Properties props, List<String> classifierWithLikes) {
         log("------------------------------------------------------------------------");
         log("Detecting the operating system and CPU architecture");
         log("------------------------------------------------------------------------");
