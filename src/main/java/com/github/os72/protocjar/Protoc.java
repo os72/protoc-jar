@@ -198,34 +198,34 @@ public class Protoc
 				protocVersion.mArtifact + "/" + protocVersion.mVersion + "/" +
 				protocVersion.mArtifact + "-" + protocVersion.mVersion + "-" + platform + ".exe";
 		
-		File tmp = File.createTempFile("protocjar", ""); tmp.delete();
-		File exeFile = new File(tmp.getParentFile(), "protocjar.webcache/" + exeName);
+		File tmpFile = File.createTempFile("protocjar", ".exe");
+		File exeFile = new File(tmpFile.getParentFile(), "protocjar.webcache/" + exeName);
 		exeFile.getParentFile().mkdirs();
-		boolean isNew = exeFile.createNewFile();
-		if (!isNew) {
-			if (System.currentTimeMillis() - exeFile.lastModified() > 60*1000) { // older than 1 min, assume cache is good
-				log("cached: " + exeFile);
-				return exeFile;
+		if (!exeFile.exists()) {
+			URL exeUrl = new URL("http://central.maven.org/maven2/" + exeName);
+			log("downloading: " + exeUrl);
+			
+			InputStream is = null;
+			FileOutputStream os = null;
+			try {
+				is = exeUrl.openStream();
+				os = new FileOutputStream(tmpFile);
+				streamCopy(is, os);
+				is.close();
+				os.close();
+				tmpFile.renameTo(exeFile);
 			}
-			exeFile = File.createTempFile("protoc", ".exe"); // cache may not be ready, download to temp file
-			exeFile.deleteOnExit();
+			catch (IOException e) {
+				tmpFile.delete();
+				throw e;
+			}
+			finally {
+				if (is != null) is.close();
+				if (os != null) os.close();			
+			}			
 		}
 		
-		URL exeUrl = new URL("http://central.maven.org/maven2/" + exeName);
-		log("downloading: " + exeUrl);
-		
-		InputStream is = null;
-		FileOutputStream os = null;
-		try {
-			is = exeUrl.openStream();
-			os = new FileOutputStream(exeFile);
-			streamCopy(is, os);
-		}
-		finally {
-			if (is != null) is.close();
-			if (os != null) os.close();			
-		}
-		
+		log("cached: " + exeFile);
 		return exeFile;
 	}
 
