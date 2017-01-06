@@ -1,6 +1,9 @@
 protoc-jar release notes
 ========================
 
+#### 3.1.0.2 (5-Jan-2017)
+* Support downloading protoc from maven central (option -v:<group>:<artifact>:<version>)
+
 #### 3.1.0.1 (27-Oct-2016)
 * Upgrade Linux 3.1.0 binary to protoc 3.1.0-build2 (issue #13)
 
