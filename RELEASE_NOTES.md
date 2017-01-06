@@ -2,7 +2,7 @@ protoc-jar release notes
 ========================
 
 #### 3.1.0.2 (5-Jan-2017)
-* Support downloading protoc from maven central (option -v:<group>:<artifact>:<version>)
+* Support downloading protoc from maven central (option `-v:<group>:<artifact>:<version>`)
 
 #### 3.1.0.1 (27-Oct-2016)
 * Upgrade Linux 3.1.0 binary to protoc 3.1.0-build2 (issue #13)
@@ -12,7 +12,7 @@ protoc-jar release notes
 * Map 3.0.0 to 3.1.0 for backward compatibility
 
 #### 3.0.0.1 (28-Aug-2016)
-* Package and support google.protobuf standard types out of the box (option --include_std_types)
+* Package and support google.protobuf standard types out of the box (option `--include_std_types`)
 
 #### 3.0.0 (2-Aug-2016)
 * Upgrade to protoc 3.0.0
@@ -22,7 +22,7 @@ protoc-jar release notes
 
 #### 3.0.0-b3 (18-May-2016)
 * Upgrade to protoc 3.0.0-beta-3
-* Support shading of generated code for use with `protobuf-java-shaded-[241|250|261]` (option --java_shaded_out)
+* Support shading of generated code for use with `protobuf-java-shaded-[241|250|261]` (option `--java_shaded_out`)
 
 #### 3.0.0-b2.1 (27-Feb-2016)
 * Fix for text file busy issue #8 (reported for Ubuntu 14.04)
