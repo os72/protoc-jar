@@ -113,11 +113,13 @@ public class PlatformDetector
 
             // If any of the requested classifier likes are found in the "likes" for this system,
             // append it to the classifier.
-            for (String classifierLike : classifierWithLikes) {
-                if (linuxRelease.like.contains(classifierLike)) {
-                    detectedClassifier += "-" + classifierLike;
-                    // First one wins.
-                    break;
+            if (classifierWithLikes != null) {
+                for (String classifierLike : classifierWithLikes) {
+                    if (linuxRelease.like.contains(classifierLike)) {
+                        detectedClassifier += "-" + classifierLike;
+                        // First one wins.
+                        break;
+                    }
                 }
             }
         }
