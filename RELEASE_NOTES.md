@@ -1,6 +1,9 @@
 protoc-jar release notes
 ========================
 
+#### 3.1.0.3 (17-Jan-2017)
+* Fix PlatformDetector NPE on Linux
+
 #### 3.1.0.2 (5-Jan-2017)
 * Support downloading protoc from maven central (option `-v:<group>:<artifact>:<version>`)
 
