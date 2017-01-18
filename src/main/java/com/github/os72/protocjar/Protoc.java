@@ -229,7 +229,7 @@ public class Protoc
 		return exeFile;
 	}
 
-	static File populateFile(String srcFilePath, File destFile) throws IOException {
+	public static File populateFile(String srcFilePath, File destFile) throws IOException {
 		String resourcePath = "/" + srcFilePath; // resourcePath for jar, srcFilePath for test
 		
 		FileOutputStream os = null;
@@ -248,7 +248,7 @@ public class Protoc
 		return destFile;
 	}
 
-	static void streamCopy(InputStream in, OutputStream out) throws IOException {
+	public static void streamCopy(InputStream in, OutputStream out) throws IOException {
 		int read = 0;
 		byte[] buf = new byte[4096];
 		while ((read = in.read(buf)) > 0) out.write(buf, 0, read);		
