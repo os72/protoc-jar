@@ -82,10 +82,21 @@ public class Protoc
 			}
 		}
 		
-		ProcessBuilder pb = new ProcessBuilder(protocCmd);
-		log("executing: " + protocCmd);
+		Process protoc = null;
+		int numTries = 1;
+		while (protoc == null) {
+			try {
+				log("executing: " + protocCmd);
+				ProcessBuilder pb = new ProcessBuilder(protocCmd);
+				protoc = pb.start();
+			}
+			catch (IOException ioe) {
+				if (numTries++ >= 3) throw ioe;
+				log("caught exception, retrying: " + ioe);
+				Thread.sleep(1000);
+			}
+		}
 		
-		Process protoc = pb.start();
 		new Thread(new StreamCopier(protoc.getInputStream(), System.out)).start();
 		new Thread(new StreamCopier(protoc.getErrorStream(), System.err)).start();
 		int exitCode = protoc.waitFor();
