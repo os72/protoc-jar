@@ -1,6 +1,11 @@
 protoc-jar release notes
 ========================
 
+#### 3.2.0 (15-Feb-2017)
+* Upgrade to protoc 3.2.0
+* Map 3.0.0, 3.1.0 to 3.2.0 for backward compatibility
+* Implement retry as workaround for text file busy issue #8
+
 #### 3.1.0.3 (17-Jan-2017)
 * Fix PlatformDetector NPE on Linux
 
