@@ -44,7 +44,7 @@ public class ProtocTest
 			Protoc.runProtoc(args);
 		}
 		{
-			String[] args = {"--version", "-v3.1.0"};
+			String[] args = {"--version", "-v3.2.0"};
 			Protoc.runProtoc(args);
 		}		
 	}
@@ -52,7 +52,7 @@ public class ProtocTest
 	@Test
 	public void testRunProtocDownload() throws Exception {
 		{
-			String[] args = {"--version", "-v:com.google.protobuf:protoc:3.1.0"};
+			String[] args = {"--version", "-v:com.google.protobuf:protoc:3.2.0"};
 			Protoc.runProtoc(args);
 		}
 	}
@@ -62,7 +62,7 @@ public class ProtocTest
 		{
 			String outDir = "target/test-protoc-stdtypes";
 			new File(outDir).mkdirs();
-			String[] args = {"-v3.1.0", "--include_std_types", "-I.", "--java_out="+outDir, sStdTypeExampleFile};
+			String[] args = {"-v3.2.0", "--include_std_types", "-I.", "--java_out="+outDir, sStdTypeExampleFile};
 			Protoc.runProtoc(args);
 		}
 	}
