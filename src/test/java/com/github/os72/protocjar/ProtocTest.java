@@ -64,13 +64,13 @@ public class ProtocTest
 		{
 			String outDir = "target/test-protoc-stdtypes";
 			new File(outDir).mkdirs();
-			String[] args = {"-v3.2.0", "--include_std_types", "-I.", "--java_out="+outDir, sStdTypeExampleFile};
+			String[] args = {"-v2.6.1", "--include_std_types", "-I.", "--java_out="+outDir, sStdTypeExampleFile2};
 			assertEquals(0, Protoc.runProtoc(args));
 		}
 		{
 			String outDir = "target/test-protoc-stdtypes";
 			new File(outDir).mkdirs();
-			String[] args = {"-v2.6.1", "--include_std_types", "-I.", "--java_out="+outDir, sStdTypeExampleFile2};
+			String[] args = {"-v3.2.0", "--include_std_types", "-I.", "--java_out="+outDir, sStdTypeExampleFile3};
 			assertEquals(0, Protoc.runProtoc(args));
 		}
 	}
@@ -108,6 +108,6 @@ public class ProtocTest
 	}
 
 	static final String sPersonSchemaFile = "src/test/resources/PersonSchema.proto";
-	static final String sStdTypeExampleFile = "src/test/resources/StdTypeExample.proto";
 	static final String sStdTypeExampleFile2 = "src/test/resources/StdTypeExample2.proto";
+	static final String sStdTypeExampleFile3 = "src/test/resources/StdTypeExample3.proto";
 }

@@ -27,7 +27,9 @@ import java.io.PrintWriter;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 public class Protoc
@@ -191,14 +193,12 @@ public class Protoc
 		tmpDirProtos.getParentFile().deleteOnExit();
 		tmpDirProtos.deleteOnExit();
 		
-		final char majorProtoVersion = protocVersion.mVersion.charAt(0);
-		final String srcPathPrefix = String.format("include_%s", majorProtoVersion);
-		for (String srcFilePath : sStdTypes) {
-			if(!srcFilePath.startsWith(srcPathPrefix)) {
-				continue;
-			}
-			File tmpFile = new File(tmpDir, srcFilePath.replace(srcPathPrefix, "include"));
-			populateFile(srcFilePath, tmpFile);
+		final String majorProtoVersion = String.valueOf(protocVersion.mVersion.charAt(0));
+		final String srcPathPrefix = String.format("proto%s/", majorProtoVersion);
+		final String[] stdTypes = sStdTypesMap.get(majorProtoVersion);
+		for (String srcFilePath : stdTypes) {
+			File tmpFile = new File(tmpDir, srcFilePath);
+			populateFile(srcPathPrefix + srcFilePath, tmpFile);
 			tmpFile.deleteOnExit();
 		}
 		
@@ -302,18 +302,26 @@ public class Protoc
 		private OutputStream mOut;
 	}
 
-	 static String[] sStdTypes = {
-	     "include_2/google/protobuf/descriptor.proto",
-		 "include_3/google/protobuf/any.proto",
-		 "include_3/google/protobuf/api.proto",
-		 "include_3/google/protobuf/descriptor.proto",
-		 "include_3/google/protobuf/duration.proto",
-		 "include_3/google/protobuf/empty.proto",
-		 "include_3/google/protobuf/field_mask.proto",
-		 "include_3/google/protobuf/source_context.proto",
-		 "include_3/google/protobuf/struct.proto",
-		 "include_3/google/protobuf/timestamp.proto",
-		 "include_3/google/protobuf/type.proto",
-		 "include_3/google/protobuf/wrappers.proto",
+	static String[] sStdTypesProto2 = {
+		"include/google/protobuf/descriptor.proto",
 	};
+	static String[] sStdTypesProto3 = {
+		"include/google/protobuf/any.proto",
+		"include/google/protobuf/api.proto",
+		"include/google/protobuf/descriptor.proto",
+		"include/google/protobuf/duration.proto",
+		"include/google/protobuf/empty.proto",
+		"include/google/protobuf/field_mask.proto",
+		"include/google/protobuf/source_context.proto",
+		"include/google/protobuf/struct.proto",
+		"include/google/protobuf/timestamp.proto",
+		"include/google/protobuf/type.proto",
+		"include/google/protobuf/wrappers.proto",
+	};
+
+	static Map<String,String[]> sStdTypesMap = new HashMap<String,String[]>();
+	static {
+		sStdTypesMap.put("2", sStdTypesProto2);
+		sStdTypesMap.put("3", sStdTypesProto3);
+	}
 }
