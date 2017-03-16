@@ -19,33 +19,35 @@ import java.io.File;
 
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+
 public class ProtocTest
 {
 	@Test
 	public void testRunProtocBasic() throws Exception {
 		{
 			String[] args = {"--help"};
-			Protoc.runProtoc(args);
+			assertEquals(0, Protoc.runProtoc(args));
 		}
 		{
 			String[] args = {"--version"};
-			Protoc.runProtoc(args);
+			assertEquals(0, Protoc.runProtoc(args));
 		}
 		{
 			String[] args = {"--version", "-v2.4.1"};
-			Protoc.runProtoc(args);
+			assertEquals(1, Protoc.runProtoc(args));
 		}
 		{
 			String[] args = {"--version", "-v2.5.0"};
-			Protoc.runProtoc(args);
+			assertEquals(0, Protoc.runProtoc(args));
 		}
 		{
 			String[] args = {"--version", "-v2.6.1"};
-			Protoc.runProtoc(args);
+			assertEquals(0, Protoc.runProtoc(args));
 		}
 		{
 			String[] args = {"--version", "-v3.2.0"};
-			Protoc.runProtoc(args);
+			assertEquals(0, Protoc.runProtoc(args));
 		}		
 	}
 
@@ -53,7 +55,7 @@ public class ProtocTest
 	public void testRunProtocDownload() throws Exception {
 		{
 			String[] args = {"--version", "-v:com.google.protobuf:protoc:3.2.0"};
-			Protoc.runProtoc(args);
+			assertEquals(0, Protoc.runProtoc(args));
 		}
 	}
 
@@ -63,7 +65,13 @@ public class ProtocTest
 			String outDir = "target/test-protoc-stdtypes";
 			new File(outDir).mkdirs();
 			String[] args = {"-v3.2.0", "--include_std_types", "-I.", "--java_out="+outDir, sStdTypeExampleFile};
-			Protoc.runProtoc(args);
+			assertEquals(0, Protoc.runProtoc(args));
+		}
+		{
+			String outDir = "target/test-protoc-stdtypes";
+			new File(outDir).mkdirs();
+			String[] args = {"-v2.6.1", "--include_std_types", "-I.", "--java_out="+outDir, sStdTypeExampleFile2};
+			assertEquals(0, Protoc.runProtoc(args));
 		}
 	}
 
@@ -73,7 +81,7 @@ public class ProtocTest
 			String outDir = "target/test-protoc";
 			new File(outDir).mkdirs();
 			String[] args = {"-v2.4.1", "--java_out="+outDir, sPersonSchemaFile};
-			Protoc.runProtoc(args);
+			assertEquals(0, Protoc.runProtoc(args));
 		}
 	}
 
@@ -83,22 +91,23 @@ public class ProtocTest
 			String outDir = "target/test-protoc-shaded-241";
 			new File(outDir).mkdirs();
 			String[] args = {"-v2.4.1", "--java_shaded_out="+outDir, sPersonSchemaFile};
-			Protoc.runProtoc(args);
+			assertEquals(0, Protoc.runProtoc(args));
 		}
 		{
 			String outDir = "target/test-protoc-shaded-250";
 			new File(outDir).mkdirs();
 			String[] args = {"-v2.5.0", "--java_shaded_out="+outDir, sPersonSchemaFile};
-			Protoc.runProtoc(args);
+			assertEquals(0, Protoc.runProtoc(args));
 		}
 		{
 			String outDir = "target/test-protoc-shaded-261";
 			new File(outDir).mkdirs();
 			String[] args = {"-v2.6.1", "--java_shaded_out="+outDir, sPersonSchemaFile};
-			Protoc.runProtoc(args);
+			assertEquals(0, Protoc.runProtoc(args));
 		}
 	}
 
 	static final String sPersonSchemaFile = "src/test/resources/PersonSchema.proto";
 	static final String sStdTypeExampleFile = "src/test/resources/StdTypeExample.proto";
+	static final String sStdTypeExampleFile2 = "src/test/resources/StdTypeExample2.proto";
 }

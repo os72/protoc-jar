@@ -191,8 +191,13 @@ public class Protoc
 		tmpDirProtos.getParentFile().deleteOnExit();
 		tmpDirProtos.deleteOnExit();
 		
+		final char majorProtoVersion = protocVersion.mVersion.charAt(0);
+		final String srcPathPrefix = String.format("include_%s", majorProtoVersion);
 		for (String srcFilePath : sStdTypes) {
-			File tmpFile = new File(tmpDir, srcFilePath);
+			if(!srcFilePath.startsWith(srcPathPrefix)) {
+				continue;
+			}
+			File tmpFile = new File(tmpDir, srcFilePath.replace(srcPathPrefix, "include"));
 			populateFile(srcFilePath, tmpFile);
 			tmpFile.deleteOnExit();
 		}
@@ -297,17 +302,18 @@ public class Protoc
 		private OutputStream mOut;
 	}
 
-	static String[] sStdTypes = {
-		"include/google/protobuf/any.proto",
-		"include/google/protobuf/api.proto",
-		"include/google/protobuf/descriptor.proto",
-		"include/google/protobuf/duration.proto",
-		"include/google/protobuf/empty.proto",
-		"include/google/protobuf/field_mask.proto",
-		"include/google/protobuf/source_context.proto",
-		"include/google/protobuf/struct.proto",
-		"include/google/protobuf/timestamp.proto",
-		"include/google/protobuf/type.proto",
-		"include/google/protobuf/wrappers.proto",
+	 static String[] sStdTypes = {
+	     "include_2/google/protobuf/descriptor.proto",
+		 "include_3/google/protobuf/any.proto",
+		 "include_3/google/protobuf/api.proto",
+		 "include_3/google/protobuf/descriptor.proto",
+		 "include_3/google/protobuf/duration.proto",
+		 "include_3/google/protobuf/empty.proto",
+		 "include_3/google/protobuf/field_mask.proto",
+		 "include_3/google/protobuf/source_context.proto",
+		 "include_3/google/protobuf/struct.proto",
+		 "include_3/google/protobuf/timestamp.proto",
+		 "include_3/google/protobuf/type.proto",
+		 "include_3/google/protobuf/wrappers.proto",
 	};
 }
