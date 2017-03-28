@@ -23,11 +23,12 @@ public class ProtocVersion
 	public static final ProtocVersion PROTOC_VERSION = new ProtocVersion(null, null, "320");
 
 	public static ProtocVersion getVersion(String spec) {
+		if (!spec.startsWith("-v")) return null;
 		String v = sVersionMap.get(spec.replace(".", ""));
 		if (v != null) return new ProtocVersion(null, null, v);		
 		String[] as = spec.split(":");
 		if (as.length == 4 && as[0].equals("-v")) return new ProtocVersion(as[1], as[2], as[3]);
-		return null;
+		throw new IllegalArgumentException("Unsupported version: " + spec);
 	}
 
 	public ProtocVersion(String group, String artifact, String version) {
