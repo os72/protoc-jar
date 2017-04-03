@@ -20,6 +20,7 @@ import java.io.File;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class ProtocTest
 {
@@ -92,19 +93,26 @@ public class ProtocTest
 			new File(outDir).mkdirs();
 			String[] args = {"-v2.4.1", "--java_shaded_out="+outDir, sPersonSchemaFile};
 			assertEquals(0, Protoc.runProtoc(args));
+			assertHasGeneratedFile(outDir);
 		}
 		{
 			String outDir = "target/test-protoc-shaded-250";
 			new File(outDir).mkdirs();
 			String[] args = {"-v2.5.0", "--java_shaded_out="+outDir, sPersonSchemaFile};
 			assertEquals(0, Protoc.runProtoc(args));
+			assertHasGeneratedFile(outDir);
 		}
 		{
 			String outDir = "target/test-protoc-shaded-261";
 			new File(outDir).mkdirs();
 			String[] args = {"-v2.6.1", "--java_shaded_out="+outDir, sPersonSchemaFile};
 			assertEquals(0, Protoc.runProtoc(args));
+			assertHasGeneratedFile(outDir);
 		}
+	}
+
+	private static void assertHasGeneratedFile(String outDir) {
+		assertTrue(new File(outDir + "/com/github/os72/protocjar/PersonSchema.java").exists());
 	}
 
 	static final String sPersonSchemaFile = "src/test/resources/PersonSchema.proto";

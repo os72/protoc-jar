@@ -122,6 +122,8 @@ public class Protoc
 				File tmpFile = null;
 				PrintWriter pw = null;
 				BufferedReader br = null;
+				FileInputStream is = null;
+				FileOutputStream os = null;
 				try {
 					tmpFile = File.createTempFile(file.getName(), null);
 					pw = new PrintWriter(tmpFile);
@@ -132,12 +134,21 @@ public class Protoc
 					}
 					pw.close();
 					br.close();
-					file.delete();
-					tmpFile.renameTo(file);
+					if (!file.delete()) {
+						log("Failed to delete " + file.getName());
+					}
+					is = new FileInputStream(tmpFile);
+					os = new FileOutputStream(file);
+					streamCopy(is, os);
+					if (!tmpFile.delete()) {
+						log("Failed to delete temporary file" + tmpFile.getName());
+					}
 				}
 				finally {
 					if (br != null) { try {br.close();} catch (Exception e) {} }
 					if (pw != null) { try {pw.close();} catch (Exception e) {} }
+					if (is != null) { try {is.close();} catch (Exception e) {} }
+					if (os != null) { try {os.close();} catch (Exception e) {} }
 				}
 			}
 		}
