@@ -134,21 +134,18 @@ public class Protoc
 					}
 					pw.close();
 					br.close();
-					if (!file.delete()) {
-						log("Failed to delete " + file.getName());
-					}
+					// tmpFile.renameTo(file) only works on same filesystem, make copy instead:
+					if (!file.delete()) log("Failed to delete: " + file.getName());
 					is = new FileInputStream(tmpFile);
 					os = new FileOutputStream(file);
 					streamCopy(is, os);
-					if (!tmpFile.delete()) {
-						log("Failed to delete temporary file" + tmpFile.getName());
-					}
 				}
 				finally {
 					if (br != null) { try {br.close();} catch (Exception e) {} }
 					if (pw != null) { try {pw.close();} catch (Exception e) {} }
 					if (is != null) { try {is.close();} catch (Exception e) {} }
 					if (os != null) { try {os.close();} catch (Exception e) {} }
+					if (tmpFile != null) tmpFile.delete();
 				}
 			}
 		}
