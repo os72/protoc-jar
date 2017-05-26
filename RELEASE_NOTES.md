@@ -1,6 +1,11 @@
 protoc-jar release notes
 ========================
 
+#### 3.3.0 (26-May-2017)
+* Upgrade to protoc 3.3.0
+* Map 3.0.0, 3.1.0, 3.2.0 to 3.3.0 for backward compatibility
+* Fix for shading when tmp dir and source code are on different filesystems (option `--java_shaded_out`)
+
 #### 3.2.0.1 (2-Apr-2017)
 * Separate proto3 and proto2 standard types (option `--include_std_types`)
 * Better error message for unsupported versions (issue #19)
