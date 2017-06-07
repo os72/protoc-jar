@@ -54,9 +54,13 @@ public class Protoc
 		}
 		
 		File protocTemp = extractProtoc(protocVersion, includeStdTypes);
-		int exitCode = runProtoc(protocTemp.getAbsolutePath(), Arrays.asList(args));
-		protocTemp.delete();
-		return exitCode;
+		protocTemp.deleteOnExit();
+		try {
+			return runProtoc(protocTemp.getAbsolutePath(), Arrays.asList(args));
+		} catch (IOException e) {
+			log(e.toString());
+			return (new LinuxProtocRecoverer(protocTemp, args, e)).attemptToRecover();
+		}
 	}
 
 	public static int runProtoc(String cmd, String[] args) throws IOException, InterruptedException {
@@ -175,7 +179,7 @@ public class Protoc
 		else { // download protoc from maven central
 			srcFilePath = downloadProtoc(protocVersion).getAbsolutePath();
 		}
-		
+
 		File tmpDir = File.createTempFile("protocjar", "");
 		tmpDir.delete(); tmpDir.mkdirs();
 		tmpDir.deleteOnExit();
@@ -217,7 +221,7 @@ public class Protoc
 		Properties detectorProps = new Properties();
 		new PlatformDetector().detect(detectorProps, null);
 		String platform = detectorProps.getProperty("os.detected.classifier");
-		
+
 		String exeName = protocVersion.mGroup.replace(".", "/") + "/" +
 				protocVersion.mArtifact + "/" + protocVersion.mVersion + "/" +
 				protocVersion.mArtifact + "-" + protocVersion.mVersion + "-" + platform + ".exe";
