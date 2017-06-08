@@ -151,6 +151,12 @@ public class Protoc
 		}
 	}
 
+	public static File extractProtoc(ProtocVersion protocVersion, boolean includeStdTypes) throws IOException {
+		File protocTemp = extractProtoc(protocVersion);
+		if (includeStdTypes) extractStdTypes(protocVersion, protocTemp.getParentFile().getParentFile());
+		return protocTemp;
+	}
+
 	public static File extractProtoc(ProtocVersion protocVersion) throws IOException {
 		log("protoc version: " + protocVersion + ", detected platform: " + getPlatform());
 		
@@ -170,7 +176,7 @@ public class Protoc
 			}
 			else {
 				throw new IOException("Unsupported platform: " + getPlatform());
-			}			
+			}
 		}
 		else { // download protoc from maven central
 			srcFilePath = downloadProtoc(protocVersion).getAbsolutePath();
@@ -190,11 +196,13 @@ public class Protoc
 		return protocTemp;
 	}
 
-	public static File extractProtoc(ProtocVersion protocVersion, boolean includeStdTypes) throws IOException {
-		File protocTemp = extractProtoc(protocVersion);
-		if (!includeStdTypes) return protocTemp;
+	public static File extractStdTypes(ProtocVersion protocVersion, File tmpDir) throws IOException {
+		if (tmpDir == null) {
+			tmpDir = File.createTempFile("protocjar", "");
+			tmpDir.delete(); tmpDir.mkdirs();
+			tmpDir.deleteOnExit();
+		}
 		
-		File tmpDir = protocTemp.getParentFile().getParentFile();
 		File tmpDirProtos = new File(tmpDir, "include/google/protobuf");
 		tmpDirProtos.mkdirs();
 		tmpDirProtos.getParentFile().getParentFile().deleteOnExit();
@@ -210,7 +218,7 @@ public class Protoc
 			tmpFile.deleteOnExit();
 		}
 		
-		return protocTemp;
+		return tmpDir;
 	}
 
 	public static File downloadProtoc(ProtocVersion protocVersion) throws IOException {				
