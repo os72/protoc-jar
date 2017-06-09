@@ -57,9 +57,9 @@ public class Protoc
 		protocTemp.deleteOnExit();
 		try {
 			return runProtoc(protocTemp.getAbsolutePath(), Arrays.asList(args));
-		} catch (IOException e) {
+		} catch (Exception e) {
 			log(e.toString());
-			return (new LinuxProtocRecoverer(protocTemp, args, e)).attemptToRecover();
+			return (new ProtocRunnerRecoverer(protocTemp, args)).attemptToRecover();
 		}
 	}
 
