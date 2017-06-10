@@ -53,9 +53,23 @@ public class Protoc
 			if (arg.equals("--include_std_types")) includeStdTypes = true;
 		}
 		
-		File protocTemp = extractProtoc(protocVersion, includeStdTypes);
-		int exitCode = runProtoc(protocTemp.getAbsolutePath(), Arrays.asList(args));
-		protocTemp.delete();
+		int exitCode = -1;
+		File protocTemp = null;
+		File protocTempAlt = null;
+		try {
+			protocTemp = extractProtoc(protocVersion, includeStdTypes, null);
+			exitCode = runProtoc(protocTemp.getAbsolutePath(), Arrays.asList(args));
+		}
+		catch (Exception e) {
+			// some linuxes don't allow exec in /tmp, try user home
+			String homeDir = System.getProperty("user.home");
+			protocTempAlt = extractProtoc(protocVersion, includeStdTypes, new File(homeDir));
+			exitCode = runProtoc(protocTempAlt.getAbsolutePath(), Arrays.asList(args));
+		}
+		finally {
+			if (protocTemp != null) protocTemp.delete();
+			if (protocTempAlt != null) protocTempAlt.delete();
+		}
 		return exitCode;
 	}
 
@@ -93,7 +107,7 @@ public class Protoc
 				protoc = pb.start();
 			}
 			catch (IOException ioe) {
-				if (numTries++ >= 3) throw ioe;
+				if (numTries++ >= 3) throw ioe; // retry loop, workaround text file busy issue
 				log("caught exception, retrying: " + ioe);
 				Thread.sleep(1000);
 			}
@@ -152,12 +166,16 @@ public class Protoc
 	}
 
 	public static File extractProtoc(ProtocVersion protocVersion, boolean includeStdTypes) throws IOException {
-		File protocTemp = extractProtoc(protocVersion);
+		return extractProtoc(protocVersion, includeStdTypes, null);
+	}
+
+	public static File extractProtoc(ProtocVersion protocVersion, boolean includeStdTypes, File dir) throws IOException {
+		File protocTemp = extractProtoc(protocVersion, dir);
 		if (includeStdTypes) extractStdTypes(protocVersion, protocTemp.getParentFile().getParentFile());
 		return protocTemp;
 	}
 
-	public static File extractProtoc(ProtocVersion protocVersion) throws IOException {
+	public static File extractProtoc(ProtocVersion protocVersion, File dir) throws IOException {
 		log("protoc version: " + protocVersion + ", detected platform: " + getPlatform());
 		
 		String srcFilePath = null;
@@ -182,7 +200,7 @@ public class Protoc
 			srcFilePath = downloadProtoc(protocVersion).getAbsolutePath();
 		}
 		
-		File tmpDir = File.createTempFile("protocjar", "");
+		File tmpDir = File.createTempFile("protocjar", "", dir);
 		tmpDir.delete(); tmpDir.mkdirs();
 		tmpDir.deleteOnExit();
 		File binDir = new File(tmpDir, "bin");
