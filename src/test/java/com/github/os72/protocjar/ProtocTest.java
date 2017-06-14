@@ -27,10 +27,6 @@ public class ProtocTest
 	@Test
 	public void testRunProtocBasic() throws Exception {
 		{
-			String[] args = {"--help"};
-			assertEquals(0, Protoc.runProtoc(args));
-		}
-		{
 			String[] args = {"--version"};
 			assertEquals(0, Protoc.runProtoc(args));
 		}
