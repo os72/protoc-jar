@@ -54,21 +54,15 @@ public class Protoc
 		}
 		
 		try {
-			return runProtoc(extractProtoc(protocVersion, includeStdTypes, null).getAbsolutePath(),
-					Arrays.asList(args));
+			File protocTemp = extractProtoc(protocVersion, includeStdTypes, null);
+			return runProtoc(protocTemp.getAbsolutePath(), Arrays.asList(args));
 		}
 		catch (Exception e) {
 			// some linuxes don't allow exec in /tmp, try user home
-			return runProtoc(extractProtoc(protocVersion, includeStdTypes, makeAlternativeTmpDir()).getAbsolutePath(),
-					Arrays.asList(args));
+			String homeDir = System.getProperty("user.home");
+			File protocTemp = extractProtoc(protocVersion, includeStdTypes, new File(homeDir));
+			return runProtoc(protocTemp.getAbsolutePath(), Arrays.asList(args));
 		}
-	}
-
-	private static File makeAlternativeTmpDir() {
-		File newTmp = new File(System.getProperty("user.home") + File.separator + "tmp");
-		newTmp.mkdirs();
-		newTmp.deleteOnExit();
-		return newTmp;
 	}
 
 	public static int runProtoc(String cmd, String[] args) throws IOException, InterruptedException {
