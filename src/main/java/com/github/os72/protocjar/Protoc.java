@@ -175,14 +175,26 @@ public class Protoc
 			String binVersionDir = "bin_" + protocVersion;
 			String osName = System.getProperty("os.name").toLowerCase();
 			String osArch = System.getProperty("os.arch").toLowerCase();
+
+			// Map of Java os.arch -> directory name
+			Map<String, String> archMap = new HashMap<String, String>();
+			archMap.put("amd64", "amd64");
+			archMap.put("x86_64", "amd64");
+			archMap.put("x86", "x86");
+			archMap.put("i386", "x86");
+			archMap.put("i486", "x86");
+			archMap.put("i586", "x86");
+			archMap.put("i686", "x86");
+			archMap.put("ppc64le", "ppc64le");
+
 			if (osName.startsWith("win")) {
 				srcFilePath = binVersionDir + "/win32/protoc.exe";
 			}
-			else if (osName.startsWith("linux") && osArch.contains("64")) {
-				srcFilePath = binVersionDir + "/linux/protoc";
+			else if (osName.startsWith("linux") && archMap.containsKey(osArch)) {
+				srcFilePath = binVersionDir + "/linux/" + archMap.get(osArch) + "/protoc";
 			}
-			else if (osName.startsWith("mac") && osArch.contains("64")) {
-				srcFilePath = binVersionDir + "/mac/protoc";
+			else if (osName.startsWith("mac") && archMap.containsKey(osArch)) {
+				srcFilePath = binVersionDir + "/mac/" + archMap.get(osArch) + "/protoc";
 			}
 			else {
 				throw new IOException("Unsupported platform: " + getPlatform());
