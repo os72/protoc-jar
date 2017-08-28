@@ -27,9 +27,6 @@
       <directory>bin_261</directory>
     </fileSet>
     <fileSet>
-      <directory>bin_330</directory>
-    </fileSet>
-    <fileSet>
       <directory>bin_340</directory>
     </fileSet>
   </fileSets>

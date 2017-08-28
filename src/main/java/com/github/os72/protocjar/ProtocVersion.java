@@ -20,7 +20,7 @@ import java.util.Map;
 
 public class ProtocVersion
 {
-	public static final ProtocVersion PROTOC_VERSION = new ProtocVersion(null, null, "330");
+	public static final ProtocVersion PROTOC_VERSION = new ProtocVersion(null, null, "340");
 
 	public static ProtocVersion getVersion(String spec) {
 		if (!spec.startsWith("-v")) return null;
@@ -50,10 +50,10 @@ public class ProtocVersion
 	private static Map<String,String> sVersionMap = new HashMap<String,String>();
 	static {
 		sVersionMap.put("-v340", "340");
-		sVersionMap.put("-v330", "330");
-		sVersionMap.put("-v320", "330");
-		sVersionMap.put("-v310", "330");
-		sVersionMap.put("-v300", "330");
+		sVersionMap.put("-v330", "340");
+		sVersionMap.put("-v320", "340");
+		sVersionMap.put("-v310", "340");
+		sVersionMap.put("-v300", "340");
 		sVersionMap.put("-v261", "261");
 		sVersionMap.put("-v250", "250");
 		sVersionMap.put("-v241", "241");
