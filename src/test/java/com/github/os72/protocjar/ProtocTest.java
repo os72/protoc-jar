@@ -45,7 +45,11 @@ public class ProtocTest
 		{
 			String[] args = {"--version", "-v3.3.0"};
 			assertEquals(0, Protoc.runProtoc(args));
-		}		
+		}
+		{
+			String[] args = {"--version", "-v3.4.0"};
+			assertEquals(0, Protoc.runProtoc(args));
+		}
 	}
 
 	@Test
@@ -68,6 +72,12 @@ public class ProtocTest
 			String outDir = "target/test-protoc-stdtypes";
 			new File(outDir).mkdirs();
 			String[] args = {"-v3.3.0", "--include_std_types", "-I.", "--java_out="+outDir, sStdTypeExampleFile3};
+			assertEquals(0, Protoc.runProtoc(args));
+		}
+		{
+			String outDir = "target/test-protoc-stdtypes";
+			new File(outDir).mkdirs();
+			String[] args = {"-v3.4.0", "--include_std_types", "-I.", "--java_out="+outDir, sStdTypeExampleFile3};
 			assertEquals(0, Protoc.runProtoc(args));
 		}
 	}
