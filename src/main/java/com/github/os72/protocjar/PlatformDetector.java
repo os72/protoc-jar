@@ -380,4 +380,13 @@ public class PlatformDetector
             super(message);
         }
     }
+
+    public static void main(String[] args) {
+    	PlatformDetector detector = new PlatformDetector() {
+    		protected void log(String msg) {System.out.println(msg);}
+    		protected void logProperty(String name, String value) {log(name + ": " + value);}
+    	};
+    	Properties props = new Properties();
+    	detector.detect(props, null);
+    }
 }

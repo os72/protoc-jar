@@ -36,6 +36,10 @@ public class Protoc
 {
 	public static void main(String[] args) {
 		try {
+			if (args.length > 0 && args[0].equals("-pp")) { // print platform
+				PlatformDetector.main(args);
+				return;
+			}
 			int exitCode = runProtoc(args);
 			System.exit(exitCode);
 		}
@@ -316,7 +320,7 @@ public class Protoc
 		return System.getProperty("os.name").toLowerCase() + "/" + System.getProperty("os.arch").toLowerCase();
 	}
 
-	static void log(String msg) {
+	static void log(Object msg) {
 		System.out.println("protoc-jar: " + msg);
 	}
 
