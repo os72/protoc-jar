@@ -179,26 +179,15 @@ public class Protoc
 			String binVersionDir = "bin_" + protocVersion;
 			String osName = System.getProperty("os.name").toLowerCase();
 			String osArch = System.getProperty("os.arch").toLowerCase();
-
-			// Map of Java os.arch -> directory name
-			Map<String, String> archMap = new HashMap<String, String>();
-			archMap.put("amd64", "amd64");
-			archMap.put("x86_64", "amd64");
-			archMap.put("x86", "x86");
-			archMap.put("i386", "x86");
-			archMap.put("i486", "x86");
-			archMap.put("i586", "x86");
-			archMap.put("i686", "x86");
-			archMap.put("ppc64le", "ppc64le");
-
+			
 			if (osName.startsWith("win")) {
 				srcFilePath = binVersionDir + "/win32/protoc.exe";
 			}
-			else if (osName.startsWith("linux") && archMap.containsKey(osArch)) {
-				srcFilePath = binVersionDir + "/linux/" + archMap.get(osArch) + "/protoc";
+			else if (osName.startsWith("linux") && sArchMap.containsKey(osArch)) {
+				srcFilePath = binVersionDir + "/linux/" + sArchMap.get(osArch) + "/protoc";
 			}
-			else if (osName.startsWith("mac") && archMap.containsKey(osArch)) {
-				srcFilePath = binVersionDir + "/mac/" + archMap.get(osArch) + "/protoc";
+			else if (osName.startsWith("mac") && sArchMap.containsKey(osArch)) {
+				srcFilePath = binVersionDir + "/mac/" + sArchMap.get(osArch) + "/protoc";
 			}
 			else {
 				throw new IOException("Unsupported platform: " + getPlatform());
@@ -365,5 +354,18 @@ public class Protoc
 	static {
 		sStdTypesMap.put("2", sStdTypesProto2);
 		sStdTypesMap.put("3", sStdTypesProto3);
+	}
+
+	// Map of Java os.arch -> directory name
+	static Map<String,String> sArchMap = new HashMap<String,String>();
+	static {
+		sArchMap.put("amd64", "amd64");
+		sArchMap.put("x86_64", "amd64");
+		sArchMap.put("x86", "x86");
+		sArchMap.put("i386", "x86");
+		sArchMap.put("i486", "x86");
+		sArchMap.put("i586", "x86");
+		sArchMap.put("i686", "x86");
+		sArchMap.put("ppc64le", "ppc64le");
 	}
 }
