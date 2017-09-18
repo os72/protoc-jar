@@ -18,6 +18,7 @@ package com.github.os72.protocjar;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -44,6 +45,7 @@ public class Protoc
 			System.exit(exitCode);
 		}
 		catch (Exception e) {
+			log(e);
 			e.printStackTrace();
 		}
 	}
@@ -60,6 +62,9 @@ public class Protoc
 		try {
 			File protocTemp = extractProtoc(protocVersion, includeStdTypes, null);
 			return runProtoc(protocTemp.getAbsolutePath(), Arrays.asList(args));
+		}
+		catch (FileNotFoundException e) {
+			throw e;
 		}
 		catch (Exception e) {
 			// some linuxes don't allow exec in /tmp, try user home
@@ -172,30 +177,7 @@ public class Protoc
 	}
 
 	public static File extractProtoc(ProtocVersion protocVersion, File dir) throws IOException {
-		log("protoc version: " + protocVersion + ", detected platform: " + getPlatform());
-		
-		String srcFilePath = null;
-		if (protocVersion.mArtifact == null) { // extract embedded protoc
-			String binVersionDir = "bin_" + protocVersion;
-			String osName = System.getProperty("os.name").toLowerCase();
-			String osArch = System.getProperty("os.arch").toLowerCase();
-			
-			if (osName.startsWith("win")) {
-				srcFilePath = binVersionDir + "/win32/protoc.exe";
-			}
-			else if (osName.startsWith("linux") && sArchMap.containsKey(osArch)) {
-				srcFilePath = binVersionDir + "/linux/" + sArchMap.get(osArch) + "/protoc";
-			}
-			else if (osName.startsWith("mac") && sArchMap.containsKey(osArch)) {
-				srcFilePath = binVersionDir + "/mac/" + sArchMap.get(osArch) + "/protoc";
-			}
-			else {
-				throw new IOException("Unsupported platform: " + getPlatform());
-			}
-		}
-		else { // download protoc from maven central
-			srcFilePath = downloadProtoc(protocVersion).getAbsolutePath();
-		}
+		log("protoc version: " + protocVersion + ", detected platform: " + getPlatformVerbose());
 		
 		File tmpDir = File.createTempFile("protocjar", "", dir);
 		tmpDir.delete(); tmpDir.mkdirs();
@@ -204,11 +186,94 @@ public class Protoc
 		binDir.mkdirs();
 		binDir.deleteOnExit();
 		
+		File exeFile = null;
+		if (protocVersion.mArtifact == null) { // look for embedded protoc and on web (maven central)
+			// look for embedded version
+			String srcFilePath = "bin/" + protocVersion.mVersion + "/" + getProtocExeName(protocVersion);
+			try {
+				File protocTemp = new File(binDir, "protoc.exe");
+				populateFile(srcFilePath, protocTemp);
+				log("embedded: " + srcFilePath);
+				protocTemp.setExecutable(true);
+				protocTemp.deleteOnExit();
+				return protocTemp;
+			}
+			catch (FileNotFoundException e) {
+				//log(e);
+			}
+			
+			// look in cache and maven central
+			exeFile = findDownloadProtoc(protocVersion);
+		}
+		else { // download by artifact id from maven central
+			String downloadPath = protocVersion.mGroup.replace(".", "/") + "/" + protocVersion.mArtifact + "/";
+			exeFile = downloadProtoc(protocVersion, downloadPath);
+		}
+		
+		if (exeFile == null) throw new FileNotFoundException("Unsupported platform: " + getProtocExeName(protocVersion));
+		
 		File protocTemp = new File(binDir, "protoc.exe");
-		populateFile(srcFilePath, protocTemp);
+		populateFile(exeFile.getAbsolutePath(), protocTemp);
 		protocTemp.setExecutable(true);
 		protocTemp.deleteOnExit();
 		return protocTemp;
+	}
+
+	public static File findDownloadProtoc(ProtocVersion protocVersion) throws IOException {
+		// look in webcache
+		File webcacheDir = getWebcacheDir();
+		for (String downloadPath : sDdownloadPaths) {
+			String srcSubPath = protocVersion.mVersion + "/" + getProtocExeName(protocVersion);
+			File exeFile = new File(webcacheDir, downloadPath + srcSubPath);
+			if (exeFile.exists()) {
+				log("cached: " + exeFile);
+				return exeFile;
+			}
+		}
+		
+		// look on maven central
+		for (String downloadPath : sDdownloadPaths) {
+			try {
+				return downloadProtoc(protocVersion, downloadPath);
+			}
+			catch (IOException e) {
+				//log(e);
+			}
+		}
+		
+		return null;
+	}
+
+	public static File downloadProtoc(ProtocVersion protocVersion, String downloadPath) throws IOException {
+		File webcacheDir = getWebcacheDir();
+		String srcSubPath = protocVersion.mVersion + "/" + getProtocExeName(protocVersion);
+		File exeFile = new File(webcacheDir, downloadPath + srcSubPath);
+		if (!exeFile.exists()) {
+			URL exeUrl = new URL("http://central.maven.org/maven2/" + downloadPath + srcSubPath);
+			File tmpFile = File.createTempFile("protocjar", ".exe");
+			InputStream is = null;
+			FileOutputStream os = null;
+			try {
+				is = exeUrl.openStream();
+				os = new FileOutputStream(tmpFile);
+				log("downloading: " + exeUrl);
+				streamCopy(is, os);
+				is.close();
+				os.close();
+				exeFile.getParentFile().mkdirs();
+				tmpFile.renameTo(exeFile);
+			}
+			catch (IOException e) {
+				tmpFile.delete();
+				throw e;
+			}
+			finally {
+				if (is != null) is.close();
+				if (os != null) os.close();			
+			}			
+		}
+		log("cached: " + exeFile);
+		return exeFile;
 	}
 
 	public static File extractStdTypes(ProtocVersion protocVersion, File tmpDir) throws IOException {
@@ -236,46 +301,6 @@ public class Protoc
 		return tmpDir;
 	}
 
-	public static File downloadProtoc(ProtocVersion protocVersion) throws IOException {				
-		Properties detectorProps = new Properties();
-		new PlatformDetector().detect(detectorProps, null);
-		String platform = detectorProps.getProperty("os.detected.classifier");
-		
-		String exeName = protocVersion.mGroup.replace(".", "/") + "/" +
-				protocVersion.mArtifact + "/" + protocVersion.mVersion + "/" +
-				protocVersion.mArtifact + "-" + protocVersion.mVersion + "-" + platform + ".exe";
-		
-		File tmpFile = File.createTempFile("protocjar", ".exe");
-		File exeFile = new File(tmpFile.getParentFile(), "protocjar.webcache/" + exeName);
-		exeFile.getParentFile().mkdirs();
-		if (!exeFile.exists()) {
-			URL exeUrl = new URL("http://central.maven.org/maven2/" + exeName);
-			log("downloading: " + exeUrl);
-			
-			InputStream is = null;
-			FileOutputStream os = null;
-			try {
-				is = exeUrl.openStream();
-				os = new FileOutputStream(tmpFile);
-				streamCopy(is, os);
-				is.close();
-				os.close();
-				tmpFile.renameTo(exeFile);
-			}
-			catch (IOException e) {
-				tmpFile.delete();
-				throw e;
-			}
-			finally {
-				if (is != null) is.close();
-				if (os != null) os.close();			
-			}			
-		}
-		
-		log("cached: " + exeFile);
-		return exeFile;
-	}
-
 	public static File populateFile(String srcFilePath, File destFile) throws IOException {
 		String resourcePath = "/" + srcFilePath; // resourcePath for jar, srcFilePath for test
 		
@@ -301,12 +326,29 @@ public class Protoc
 		while ((read = in.read(buf)) > 0) out.write(buf, 0, read);		
 	}
 
-	static ProtocVersion getVersion(String spec) {
-		return ProtocVersion.getVersion(spec);
+	static File getWebcacheDir() throws IOException {
+		File tmpFile = File.createTempFile("protocjar", ".tmp");
+		File cacheDir = new File(tmpFile.getParentFile(), "protocjar.webcache");
+		cacheDir.mkdirs();
+		tmpFile.delete();
+		return cacheDir;
 	}
 
-	static String getPlatform() {
-		return System.getProperty("os.name").toLowerCase() + "/" + System.getProperty("os.arch").toLowerCase();
+	static String getProtocExeName(ProtocVersion protocVersion) {
+		return "protoc-" + protocVersion.mVersion + "-" + getPlatformClassifier() + ".exe";
+	}
+
+	static String getPlatformVerbose() {
+		return getPlatformClassifier() + " (" + System.getProperty("os.name").toLowerCase() + "/" + System.getProperty("os.arch").toLowerCase() + ")";
+	}
+	static String getPlatformClassifier() {
+		Properties detectorProps = new Properties();
+		new PlatformDetector().detect(detectorProps, null);
+		return detectorProps.getProperty("os.detected.classifier");
+	}
+
+	static ProtocVersion getVersion(String spec) {
+		return ProtocVersion.getVersion(spec);
 	}
 
 	static void log(Object msg) {
@@ -333,6 +375,11 @@ public class Protoc
 		private OutputStream mOut;
 	}
 
+	static String[] sDdownloadPaths = {
+		"com/github/os72/protoc/",
+		"com/google/protobuf/protoc/",
+	};
+
 	static String[] sStdTypesProto2 = {
 		"include/google/protobuf/descriptor.proto",
 	};
@@ -354,18 +401,5 @@ public class Protoc
 	static {
 		sStdTypesMap.put("2", sStdTypesProto2);
 		sStdTypesMap.put("3", sStdTypesProto3);
-	}
-
-	// Map of Java os.arch -> directory name
-	static Map<String,String> sArchMap = new HashMap<String,String>();
-	static {
-		sArchMap.put("amd64", "amd64");
-		sArchMap.put("x86_64", "amd64");
-		sArchMap.put("x86", "x86");
-		sArchMap.put("i386", "x86");
-		sArchMap.put("i486", "x86");
-		sArchMap.put("i586", "x86");
-		sArchMap.put("i686", "x86");
-		sArchMap.put("ppc64le", "ppc64le");
 	}
 }

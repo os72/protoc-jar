@@ -20,15 +20,19 @@ import java.util.Map;
 
 public class ProtocVersion
 {
-	public static final ProtocVersion PROTOC_VERSION = new ProtocVersion(null, null, "340");
+	public static final ProtocVersion PROTOC_VERSION = new ProtocVersion(null, null, "3.4.0");
 
 	public static ProtocVersion getVersion(String spec) {
 		if (!spec.startsWith("-v")) return null;
-		String v = sVersionMap.get(spec.replace(".", ""));
-		if (v != null) return new ProtocVersion(null, null, v);		
+		ProtocVersion version = null;
 		String[] as = spec.split(":");
-		if (as.length == 4 && as[0].equals("-v")) return new ProtocVersion(as[1], as[2], as[3]);
-		throw new IllegalArgumentException("Unsupported version: " + spec);
+		if (as.length == 4 && as[0].equals("-v")) version = new ProtocVersion(as[1], as[2], as[3]);
+		else version = new ProtocVersion(null, null, spec.substring(2));
+		if (version.mVersion.length() == 3) { // "123" -> "1.2.3"
+			String dotVersion = version.mVersion.charAt(0) + "." + version.mVersion.charAt(1) + "." + version.mVersion.charAt(2);
+			version = new ProtocVersion(version.mGroup, version.mArtifact, dotVersion);
+		}
+		return version;
 	}
 
 	public ProtocVersion(String group, String artifact, String version) {
@@ -46,16 +50,4 @@ public class ProtocVersion
 	public final String mGroup;
 	public final String mArtifact;
 	public final String mVersion;
-
-	private static Map<String,String> sVersionMap = new HashMap<String,String>();
-	static {
-		sVersionMap.put("-v340", "340");
-		sVersionMap.put("-v330", "340");
-		sVersionMap.put("-v320", "340");
-		sVersionMap.put("-v310", "340");
-		sVersionMap.put("-v300", "340");
-		sVersionMap.put("-v261", "261");
-		sVersionMap.put("-v250", "250");
-		sVersionMap.put("-v241", "241");
-	}
 }
