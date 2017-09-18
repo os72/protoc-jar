@@ -26,6 +26,7 @@ public class ProtocTest
 {
 	@Test
 	public void testRunProtocBasic() throws Exception {
+		log("testRunProtocBasic");
 		{
 			String[] args = {"--version"};
 			assertEquals(0, Protoc.runProtoc(args));
@@ -50,6 +51,7 @@ public class ProtocTest
 
 	@Test
 	public void testRunProtocDownload() throws Exception {
+		log("testRunProtocDownload");
 		{
 			String[] args = {"--version", "-v:com.google.protobuf:protoc:3.0.0"};
 			assertEquals(0, Protoc.runProtoc(args));
@@ -58,6 +60,7 @@ public class ProtocTest
 
 	@Test
 	public void testStdTypes() throws Exception {
+		log("testStdTypes");
 		{
 			String outDir = "target/test-protoc-stdtypes";
 			new File(outDir).mkdirs();
@@ -74,6 +77,7 @@ public class ProtocTest
 
 	@Test
 	public void testRunProtocCompile() throws Exception {
+		log("testRunProtocCompile");
 		{
 			String outDir = "target/test-protoc";
 			new File(outDir).mkdirs();
@@ -84,6 +88,7 @@ public class ProtocTest
 
 	@Test
 	public void testRunProtocCompileShade() throws Exception {
+		log("testRunProtocCompileShade");
 		{
 			String outDir = "target/test-protoc-shaded-241";
 			new File(outDir).mkdirs();
@@ -109,6 +114,10 @@ public class ProtocTest
 
 	private static void assertHasGeneratedFile(String outDir) {
 		assertTrue(new File(outDir + "/com/github/os72/protocjar/PersonSchema.java").exists());
+	}
+
+	static void log(Object msg) {
+		System.out.println("protoc-jar-test: " + msg);
 	}
 
 	static final String sPersonSchemaFile = "src/test/resources/PersonSchema.proto";
