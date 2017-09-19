@@ -18,16 +18,12 @@
   </dependencySets>
   <fileSets>
     <fileSet>
-      <directory>bin_241</directory>
-    </fileSet>
-    <fileSet>
-      <directory>bin_250</directory>
-    </fileSet>
-    <fileSet>
-      <directory>bin_261</directory>
-    </fileSet>
-    <fileSet>
-      <directory>bin_340</directory>
+      <directory>bin</directory>
+      <includes>
+      	<include>*/*linux-x86_64*</include>
+      	<include>*/*osx-x86_64*</include>
+      	<include>*/*windows-x86_64*</include>
+      </includes>
     </fileSet>
   </fileSets>
 </assembly>
