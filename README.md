@@ -19,6 +19,9 @@ See also
 * https://github.com/os72/protobuf-java-shaded-250
 * https://github.com/os72/protobuf-java-shaded-261
 * https://github.com/google/protobuf
+* http://central.maven.org/maven2/com/google/protobuf/protoc/
+* http://central.maven.org/maven2/com/github/os72/protoc/
+* https://oss.sonatype.org/content/repositories/snapshots/com/github/os72/protoc/
 
 Version support
 * protobuf 2.4.1: `-v2.4.1`, `-v241`
