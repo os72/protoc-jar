@@ -16,8 +16,10 @@
 package com.github.os72.protocjar;
 
 import java.io.File;
+import java.util.Properties;
 
 import org.junit.Test;
+import com.github.os72.protocjar.PlatformDetector;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -51,8 +53,13 @@ public class ProtocTest
 	@Test
 	public void testRunProtocDownload() throws Exception {
 		{
-			String[] args = {"--version", "-v:com.google.protobuf:protoc:3.0.0"};
-			assertEquals(0, Protoc.runProtoc(args));
+			PlatformDetector detector = new PlatformDetector();
+			Properties props = new Properties();
+			detector.detect(props, null);
+			if (!props.getProperty("os.detected.name").equals("freebsd")) {
+				String[] args = {"--version", "-v:com.google.protobuf:protoc:3.0.0"};
+				assertEquals(0, Protoc.runProtoc(args));
+			}
 		}
 	}
 

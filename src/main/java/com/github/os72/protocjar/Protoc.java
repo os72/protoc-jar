@@ -186,6 +186,9 @@ public class Protoc
 			else if (osName.startsWith("linux") && sArchMap.containsKey(osArch)) {
 				srcFilePath = binVersionDir + "/linux/" + sArchMap.get(osArch) + "/protoc";
 			}
+			else if (osName.startsWith("freebsd") && sArchMap.containsKey(osArch)) {
+				srcFilePath = binVersionDir + "/freebsd/" + sArchMap.get(osArch) + "/protoc";
+			}
 			else if (osName.startsWith("mac") && sArchMap.containsKey(osArch)) {
 				srcFilePath = binVersionDir + "/mac/" + sArchMap.get(osArch) + "/protoc";
 			}
