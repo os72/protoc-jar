@@ -26,12 +26,20 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 public class Protoc
 {
@@ -245,23 +253,75 @@ public class Protoc
 	}
 
 	public static File downloadProtoc(ProtocVersion protocVersion, String downloadPath) throws IOException {
-		File webcacheDir = getWebcacheDir();
+		if (protocVersion.mVersion.endsWith("-SNAPSHOT")) {
+			return downloadProtocSnapshot(protocVersion, downloadPath);
+		}
 		String srcSubPath = protocVersion.mVersion + "/" + getProtocExeName(protocVersion);
-		File exeFile = new File(webcacheDir, downloadPath + srcSubPath);
-		if (!exeFile.exists()) {
-			URL exeUrl = new URL("http://central.maven.org/maven2/" + downloadPath + srcSubPath);
-			File tmpFile = File.createTempFile("protocjar", ".exe");
+		URL exeUrl = new URL("http://central.maven.org/maven2/" + downloadPath + srcSubPath);
+		File exeFile = new File(getWebcacheDir(), downloadPath + srcSubPath);
+		return downloadFile(exeUrl, exeFile);
+	}
+
+	public static File downloadProtocSnapshot(ProtocVersion protocVersion, String downloadPath) throws IOException {
+		String snapshotUrlStr = "https://oss.sonatype.org/content/repositories/snapshots/";
+		
+		// download maven-metadata.xml (cache for 1hr)
+		String mdSubPath = protocVersion.mVersion + "/maven-metadata.xml";
+		URL mdUrl = new URL(snapshotUrlStr + downloadPath + mdSubPath);
+		File mdFile = new File(getWebcacheDir(), downloadPath + mdSubPath);
+		if (mdFile.exists() && (System.currentTimeMillis() - mdFile.lastModified() > 3600*1000)) mdFile.delete();
+		mdFile = downloadFile(mdUrl, mdFile);
+		
+		// parse exe name from maven-metadata.xml
+		String exeName = null;
+		try {
+			String clsStr = getPlatformClassifier();
+			DocumentBuilder xmlBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+			Document xmlDoc = xmlBuilder.parse(mdFile);
+			NodeList versions = xmlDoc.getElementsByTagName("snapshotVersion");
+			for (int i = 0; i < versions.getLength(); i++) {
+				Node ver = versions.item(i);
+				Node cls = null;
+				Node val = null;
+				for (int j = 0; j < ver.getChildNodes().getLength(); j++) {
+					Node n = ver.getChildNodes().item(j);
+					if (n.getNodeName().equals("classifier")) cls = n;
+					if (n.getNodeName().equals("value")) val = n;
+				}
+				if (cls != null && val != null && cls.getTextContent().equals(clsStr))	{
+					exeName = "protoc-" + val.getTextContent() + "-" + clsStr + ".exe";
+					break;
+				}
+			}
+		}
+		catch (Exception e) {
+			throw new IOException(e);
+		}
+		if (exeName == null) return null;
+		
+		// download exe
+		String exeSubPath = protocVersion.mVersion + "/" + exeName;
+		URL exeUrl = new URL(snapshotUrlStr + downloadPath + exeSubPath);
+		File exeFile = new File(getWebcacheDir(), downloadPath + exeSubPath);
+		return downloadFile(exeUrl, exeFile);
+	}
+
+	public static File downloadFile(URL srcUrl, File destFile) throws IOException {
+		if (!destFile.exists()) {
+			File tmpFile = File.createTempFile("protocjar", ".tmp");
 			InputStream is = null;
 			FileOutputStream os = null;
 			try {
-				is = exeUrl.openStream();
+				URLConnection con = srcUrl.openConnection();
+				con.setRequestProperty("User-Agent", "Mozilla"); // sonatype only returns proper maven-metadata.xml if this is set
+				is = con.getInputStream();
 				os = new FileOutputStream(tmpFile);
-				log("downloading: " + exeUrl);
+				log("downloading: " + srcUrl);
 				streamCopy(is, os);
 				is.close();
 				os.close();
-				exeFile.getParentFile().mkdirs();
-				tmpFile.renameTo(exeFile);
+				destFile.getParentFile().mkdirs();
+				tmpFile.renameTo(destFile);
 			}
 			catch (IOException e) {
 				tmpFile.delete();
@@ -269,11 +329,11 @@ public class Protoc
 			}
 			finally {
 				if (is != null) is.close();
-				if (os != null) os.close();			
-			}			
+				if (os != null) os.close();
+			}
 		}
-		log("cached: " + exeFile);
-		return exeFile;
+		log("cached: " + destFile);
+		return destFile;
 	}
 
 	public static File extractStdTypes(ProtocVersion protocVersion, File tmpDir) throws IOException {
@@ -376,8 +436,8 @@ public class Protoc
 	}
 
 	static String[] sDdownloadPaths = {
-		"com/github/os72/protoc/",
 		"com/google/protobuf/protoc/",
+		"com/github/os72/protoc/",
 	};
 
 	static String[] sStdTypesProto2 = {
