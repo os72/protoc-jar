@@ -175,9 +175,9 @@ public class Protoc
 		log("protoc version: " + protocVersion + ", detected platform: " + getPlatform());
 		
 		String srcFilePath = null;
+		String osName = System.getProperty("os.name").toLowerCase();
 		if (protocVersion.mArtifact == null) { // extract embedded protoc
 			String binVersionDir = "bin_" + protocVersion;
-			String osName = System.getProperty("os.name").toLowerCase();
 			String osArch = System.getProperty("os.arch").toLowerCase();
 			
 			if (osName.startsWith("win")) {
@@ -197,7 +197,12 @@ public class Protoc
 			}
 		}
 		else { // download protoc from maven central
-			srcFilePath = downloadProtoc(protocVersion).getAbsolutePath();
+			if (!osName.startsWith("freebsd")) {
+				srcFilePath = downloadProtoc(protocVersion).getAbsolutePath();
+			}
+			else {
+				throw new IOException("FreeBSD platform has no pre-built binaries.");
+			}
 		}
 		
 		File tmpDir = File.createTempFile("protocjar", "", dir);
