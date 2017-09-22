@@ -33,6 +33,10 @@
       <id>nakul02</id>
       <name>Nakul Jindal</name>
     </developer>
+    <developer>
+      <id>kjopek</id>
+      <name>kjopek</name>
+    </developer>
   </developers>
 
   <scm>
