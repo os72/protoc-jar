@@ -11,34 +11,34 @@
   <description>Protocol Buffers compiler - executable</description>
 
   <parent>
-	<groupId>org.sonatype.oss</groupId>
-	<artifactId>oss-parent</artifactId>
-	<version>9</version>
+    <groupId>org.sonatype.oss</groupId>
+    <artifactId>oss-parent</artifactId>
+    <version>9</version>
   </parent>
 
   <licenses>
-	<license>
-	  <name>The Apache Software License, Version 2.0</name>
-	  <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-	  <distribution>repo</distribution>
-	</license>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
   </licenses>
 
   <developers>
-	<developer>
-	  <id>os72</id>
-	  <name>Oliver Suciu</name>
-	</developer>
-	<developer>
-	  <id>nakul02</id>
-	  <name>Nakul Jindal</name>
-	</developer>
+    <developer>
+      <id>os72</id>
+      <name>Oliver Suciu</name>
+    </developer>
+    <developer>
+      <id>nakul02</id>
+      <name>Nakul Jindal</name>
+    </developer>
   </developers>
 
   <scm>
-	<connection>scm:git:git@github.com:os72/protoc-jar.git</connection>
-	<developerConnection>scm:git:git@github.com:os72/protoc-jar.git</developerConnection>
-	<url>git@github.com:os72/protoc-jar.git</url>
+    <connection>scm:git:git@github.com:os72/protoc-jar.git</connection>
+    <developerConnection>scm:git:git@github.com:os72/protoc-jar.git</developerConnection>
+    <url>git@github.com:os72/protoc-jar.git</url>
   </scm>
 
   <dependencies>
@@ -52,7 +52,7 @@
   </dependencies>
 
   <build>
-	<plugins>
+    <plugins>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
@@ -68,30 +68,35 @@
               <artifacts>
                 <artifact>
                   <file>protoc-2.6.1-linux-ppcle_64.exe</file>
-				  <classifier>linux-ppcle_64</classifier>
-				  <type>exe</type>
+                  <classifier>linux-ppcle_64</classifier>
+                  <type>exe</type>
                 </artifact>
                 <artifact>
                   <file>protoc-2.6.1-linux-x86_64.exe</file>
-				  <classifier>linux-x86_64</classifier>
-				  <type>exe</type>
+                  <classifier>linux-x86_64</classifier>
+                  <type>exe</type>
+                </artifact>
+                <artifact>
+                  <file>protoc-2.6.1-freebsd-x86_64.exe</file>
+                  <classifier>freebsd-x86_64</classifier>
+                  <type>exe</type>
                 </artifact>
                 <artifact>
                   <file>protoc-2.6.1-osx-x86_64.exe</file>
-				  <classifier>osx-x86_64</classifier>
-				  <type>exe</type>
+                  <classifier>osx-x86_64</classifier>
+                  <type>exe</type>
                 </artifact>
                 <artifact>
                   <file>protoc-2.6.1-windows-x86_64.exe</file>
-				  <classifier>windows-x86_64</classifier>
-				  <type>exe</type>
+                  <classifier>windows-x86_64</classifier>
+                  <type>exe</type>
                 </artifact>
               </artifacts>
             </configuration>
           </execution>
         </executions>
       </plugin>
-	</plugins>
+    </plugins>
   </build>
 
 </project>
