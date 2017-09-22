@@ -256,6 +256,9 @@ public class Protoc
 		if (protocVersion.mVersion.endsWith("-SNAPSHOT")) {
 			return downloadProtocSnapshot(protocVersion, downloadPath);
 		}
+		
+		// TODO: parse maven-metadata.xml to find latest build
+		
 		String srcSubPath = protocVersion.mVersion + "/" + getProtocExeName(protocVersion);
 		URL exeUrl = new URL("http://central.maven.org/maven2/" + downloadPath + srcSubPath);
 		File exeFile = new File(getWebcacheDir(), downloadPath + srcSubPath);
@@ -264,6 +267,8 @@ public class Protoc
 
 	public static File downloadProtocSnapshot(ProtocVersion protocVersion, String downloadPath) throws IOException {
 		String snapshotUrlStr = "https://oss.sonatype.org/content/repositories/snapshots/";
+		
+		// TODO: only delete if download OK
 		
 		// download maven-metadata.xml (cache for 1hr)
 		String mdSubPath = protocVersion.mVersion + "/maven-metadata.xml";
