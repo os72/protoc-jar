@@ -28,7 +28,7 @@ Version support
 * protobuf 2.5.0: `-v2.5.0`, `-v250`
 * protobuf 2.6.1: `-v2.6.1`, `-v261`
 * protobuf 3.4.0: `-v3.4.0`, `-v340`
-* download from maven central: `-v:<group>:<artifact>:<version>` (eg, `-v:com.google.protobuf:protoc:3.0.0`)
+* download by maven artifact id: `-v:<group>:<artifact>:<version>` (eg, `-v:com.google.protobuf:protoc:3.0.0`)
 
 #### Usage - executable
 ```
