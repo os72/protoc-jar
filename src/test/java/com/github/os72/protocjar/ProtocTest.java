@@ -63,6 +63,10 @@ public class ProtocTest
 			assertEquals(0, Protoc.runProtoc(args));
 		}
 		{
+			String[] args = {"--version", "-v:com.github.os72:protoc:3.4.0"};
+			assertEquals(0, Protoc.runProtoc(args));
+		}
+		{
 			String[] args = {"--version", "-v:com.github.os72:protoc:3.4.0-SNAPSHOT"};
 			assertEquals(0, Protoc.runProtoc(args));
 		}
