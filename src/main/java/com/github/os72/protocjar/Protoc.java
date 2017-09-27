@@ -262,20 +262,17 @@ public class Protoc
 		String srcSubPath = protocVersion.mVersion + "/" + getProtocExeName(protocVersion);
 		URL exeUrl = new URL("http://central.maven.org/maven2/" + downloadPath + srcSubPath);
 		File exeFile = new File(getWebcacheDir(), downloadPath + srcSubPath);
-		return downloadFile(exeUrl, exeFile);
+		return downloadFile(exeUrl, exeFile, 0);
 	}
 
 	public static File downloadProtocSnapshot(ProtocVersion protocVersion, String downloadPath) throws IOException {
 		String snapshotUrlStr = "https://oss.sonatype.org/content/repositories/snapshots/";
 		
-		// TODO: only delete if download OK
-		
 		// download maven-metadata.xml (cache for 1hr)
 		String mdSubPath = protocVersion.mVersion + "/maven-metadata.xml";
 		URL mdUrl = new URL(snapshotUrlStr + downloadPath + mdSubPath);
 		File mdFile = new File(getWebcacheDir(), downloadPath + mdSubPath);
-		if (mdFile.exists() && (System.currentTimeMillis() - mdFile.lastModified() > 3600*1000)) mdFile.delete();
-		mdFile = downloadFile(mdUrl, mdFile);
+		mdFile = downloadFile(mdUrl, mdFile, 3600*1000);
 		
 		// parse exe name from maven-metadata.xml
 		String exeName = null;
@@ -308,36 +305,41 @@ public class Protoc
 		String exeSubPath = protocVersion.mVersion + "/" + exeName;
 		URL exeUrl = new URL(snapshotUrlStr + downloadPath + exeSubPath);
 		File exeFile = new File(getWebcacheDir(), downloadPath + exeSubPath);
-		return downloadFile(exeUrl, exeFile);
+		return downloadFile(exeUrl, exeFile, 0);
 	}
 
-	public static File downloadFile(URL srcUrl, File destFile) throws IOException {
-		if (!destFile.exists()) {
-			File tmpFile = File.createTempFile("protocjar", ".tmp");
-			InputStream is = null;
-			FileOutputStream os = null;
-			try {
-				URLConnection con = srcUrl.openConnection();
-				con.setRequestProperty("User-Agent", "Mozilla"); // sonatype only returns proper maven-metadata.xml if this is set
-				is = con.getInputStream();
-				os = new FileOutputStream(tmpFile);
-				log("downloading: " + srcUrl);
-				streamCopy(is, os);
-				is.close();
-				os.close();
-				destFile.getParentFile().mkdirs();
-				tmpFile.renameTo(destFile);
-			}
-			catch (IOException e) {
-				tmpFile.delete();
-				throw e;
-			}
-			finally {
-				if (is != null) is.close();
-				if (os != null) os.close();
-			}
+	public static File downloadFile(URL srcUrl, File destFile, long cacheTime) throws IOException {
+		if (destFile.exists() && ((cacheTime <= 0) || (System.currentTimeMillis() - destFile.lastModified() <= cacheTime))) {
+			log("cached: " + destFile);
+			return destFile;
 		}
-		log("cached: " + destFile);
+		
+		File tmpFile = File.createTempFile("protocjar", ".tmp");
+		InputStream is = null;
+		FileOutputStream os = null;
+		try {
+			URLConnection con = srcUrl.openConnection();
+			con.setRequestProperty("User-Agent", "Mozilla"); // sonatype only returns proper maven-metadata.xml if this is set
+			is = con.getInputStream();
+			os = new FileOutputStream(tmpFile);
+			log("downloading: " + srcUrl);
+			streamCopy(is, os);
+			is.close();
+			os.close();
+			destFile.getParentFile().mkdirs();
+			tmpFile.renameTo(destFile);
+			destFile.setLastModified(System.currentTimeMillis());
+		}
+		catch (IOException e) {
+			tmpFile.delete();
+			if (!destFile.exists()) throw e; // if download failed but had cached version, ignore exception
+		}
+		finally {
+			if (is != null) is.close();
+			if (os != null) os.close();
+		}
+		
+		log("saved: " + destFile);
 		return destFile;
 	}
 
