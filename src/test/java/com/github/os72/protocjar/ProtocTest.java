@@ -48,7 +48,7 @@ public class ProtocTest
 			assertEquals(0, Protoc.runProtoc(args));
 		}
 		{
-			String[] args = {"--version", "-v3.4.0-SNAPSHOT"};
+			String[] args = {"--version", "-v3.4.0-SNAPSHOT"}; // not embedded, should trigger download
 			assertEquals(0, Protoc.runProtoc(args));
 		}
 	}
