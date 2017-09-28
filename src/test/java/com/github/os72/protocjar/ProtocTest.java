@@ -59,7 +59,7 @@ public class ProtocTest
 		String cls = Protoc.getPlatformClassifier();
 		if (cls.startsWith("linux-x86") || cls.startsWith("osx-x86") || cls.startsWith("windows-x86"))
 		{
-			String[] args = {"--version", "-v:com.google.protobuf:protoc:3.0.0"};
+			String[] args = {"--version", "-v:com.google.protobuf:protoc:3.1.0"}; // should automatically pick up 3.1.0-build2
 			assertEquals(0, Protoc.runProtoc(args));
 		}
 		{

@@ -215,7 +215,7 @@ public class Protoc
 		}
 		else { // download by artifact id from maven central
 			String downloadPath = protocVersion.mGroup.replace(".", "/") + "/" + protocVersion.mArtifact + "/";
-			exeFile = downloadProtoc(protocVersion, downloadPath);
+			exeFile = downloadProtoc(protocVersion, downloadPath, true);
 		}
 		
 		if (exeFile == null) throw new FileNotFoundException("Unsupported platform: " + getProtocExeName(protocVersion));
@@ -228,21 +228,22 @@ public class Protoc
 	}
 
 	public static File findDownloadProtoc(ProtocVersion protocVersion) throws IOException {
-		// look in webcache
-		File webcacheDir = getWebcacheDir();
+		// look only for cached versions first
 		for (String downloadPath : sDdownloadPaths) {
-			String srcSubPath = protocVersion.mVersion + "/" + getProtocExeName(protocVersion);
-			File exeFile = new File(webcacheDir, downloadPath + srcSubPath);
-			if (exeFile.exists()) {
-				log("cached: " + exeFile);
-				return exeFile;
+			try {
+				File exeFile = downloadProtoc(protocVersion, downloadPath, false);
+				if (exeFile != null) return exeFile;
+			}
+			catch (IOException e) {
+				//log(e);
 			}
 		}
 		
 		// look on maven central
 		for (String downloadPath : sDdownloadPaths) {
 			try {
-				return downloadProtoc(protocVersion, downloadPath);
+				File exeFile = downloadProtoc(protocVersion, downloadPath, true);
+				if (exeFile != null) return exeFile;
 			}
 			catch (IOException e) {
 				//log(e);
@@ -252,59 +253,63 @@ public class Protoc
 		return null;
 	}
 
-	public static File downloadProtoc(ProtocVersion protocVersion, String downloadPath) throws IOException {
+	public static File downloadProtoc(ProtocVersion protocVersion, String downloadPath, boolean trueDownload) throws IOException {
 		if (protocVersion.mVersion.endsWith("-SNAPSHOT")) {
 			return downloadProtocSnapshot(protocVersion, downloadPath);
 		}
 		
-		// TODO: parse maven-metadata.xml to find latest build
+		String releaseUrlStr = "http://central.maven.org/maven2/";
+		File webcacheDir = getWebcacheDir();
 		
-		String srcSubPath = protocVersion.mVersion + "/" + getProtocExeName(protocVersion);
-		URL exeUrl = new URL("http://central.maven.org/maven2/" + downloadPath + srcSubPath);
-		File exeFile = new File(getWebcacheDir(), downloadPath + srcSubPath);
-		return downloadFile(exeUrl, exeFile, 0);
+		// download maven-metadata.xml (cache for 8hrs)
+		String mdSubPath = "maven-metadata.xml";
+		URL mdUrl = new URL(releaseUrlStr + downloadPath + mdSubPath);
+		File mdFile = new File(webcacheDir, downloadPath + mdSubPath);
+		mdFile = downloadFile(mdUrl, mdFile, 8*3600*1000);
+		
+		// find last build (if any) from maven-metadata.xml
+		try {
+			String lastBuildVersion = parseLastReleaseBuild(mdFile, protocVersion);
+			if (lastBuildVersion != null) {
+				protocVersion = new ProtocVersion(protocVersion.mGroup, protocVersion.mArtifact, lastBuildVersion);
+			}
+		}
+		catch (IOException e) {
+			//log(e);
+		}
+		
+		// download exe
+		String exeSubPath = protocVersion.mVersion + "/" + getProtocExeName(protocVersion);
+		URL exeUrl = new URL(releaseUrlStr + downloadPath + exeSubPath);
+		File exeFile = new File(webcacheDir, downloadPath + exeSubPath);
+		if (trueDownload) {
+			return downloadFile(exeUrl, exeFile, 0);
+		}
+		else if (exeFile.exists()) { // cache only
+			log("cached: " + exeFile);
+			return exeFile;
+		}
+		return null;
 	}
 
 	public static File downloadProtocSnapshot(ProtocVersion protocVersion, String downloadPath) throws IOException {
 		String snapshotUrlStr = "https://oss.sonatype.org/content/repositories/snapshots/";
+		File webcacheDir = getWebcacheDir();
 		
-		// download maven-metadata.xml (cache for 1hr)
+		// download maven-metadata.xml (cache for 8hrs)
 		String mdSubPath = protocVersion.mVersion + "/maven-metadata.xml";
 		URL mdUrl = new URL(snapshotUrlStr + downloadPath + mdSubPath);
-		File mdFile = new File(getWebcacheDir(), downloadPath + mdSubPath);
-		mdFile = downloadFile(mdUrl, mdFile, 3600*1000);
+		File mdFile = new File(webcacheDir, downloadPath + mdSubPath);
+		mdFile = downloadFile(mdUrl, mdFile, 8*3600*1000);
 		
 		// parse exe name from maven-metadata.xml
-		String exeName = null;
-		try {
-			String clsStr = getPlatformClassifier();
-			DocumentBuilder xmlBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-			Document xmlDoc = xmlBuilder.parse(mdFile);
-			NodeList versions = xmlDoc.getElementsByTagName("snapshotVersion");
-			for (int i = 0; i < versions.getLength(); i++) {
-				Node ver = versions.item(i);
-				Node cls = null;
-				Node val = null;
-				for (int j = 0; j < ver.getChildNodes().getLength(); j++) {
-					Node n = ver.getChildNodes().item(j);
-					if (n.getNodeName().equals("classifier")) cls = n;
-					if (n.getNodeName().equals("value")) val = n;
-				}
-				if (cls != null && val != null && cls.getTextContent().equals(clsStr))	{
-					exeName = "protoc-" + val.getTextContent() + "-" + clsStr + ".exe";
-					break;
-				}
-			}
-		}
-		catch (Exception e) {
-			throw new IOException(e);
-		}
+		String exeName = parseSnapshotExeName(mdFile);
 		if (exeName == null) return null;
 		
 		// download exe
 		String exeSubPath = protocVersion.mVersion + "/" + exeName;
 		URL exeUrl = new URL(snapshotUrlStr + downloadPath + exeSubPath);
-		File exeFile = new File(getWebcacheDir(), downloadPath + exeSubPath);
+		File exeFile = new File(webcacheDir, downloadPath + exeSubPath);
 		return downloadFile(exeUrl, exeFile, 0);
 	}
 
@@ -391,6 +396,59 @@ public class Protoc
 		int read = 0;
 		byte[] buf = new byte[4096];
 		while ((read = in.read(buf)) > 0) out.write(buf, 0, read);		
+	}
+
+	static String parseLastReleaseBuild(File mdFile, ProtocVersion protocVersion) throws IOException {
+		// find last build (if any) from maven-metadata.xml
+		int lastBuild = 0;
+		try {
+			DocumentBuilder xmlBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+			Document xmlDoc = xmlBuilder.parse(mdFile);
+			NodeList versions = xmlDoc.getElementsByTagName("version");
+			for (int i = 0; i < versions.getLength(); i++) {
+				Node ver = versions.item(i);
+				String verStr = ver.getTextContent();
+				if (verStr.startsWith(protocVersion.mVersion+"-build")) {
+					String buildStr = verStr.substring(verStr.indexOf("-build")+"-build".length());
+					int build = Integer.parseInt(buildStr);
+					if (build > lastBuild) lastBuild = build;
+				}
+			}
+		}
+		catch (Exception e) {
+			throw new IOException(e);
+		}
+		if (lastBuild > 0) return protocVersion.mVersion+"-build"+lastBuild;
+		return null;
+	}
+
+	static String parseSnapshotExeName(File mdFile) throws IOException {
+		// parse exe name from maven-metadata.xml
+		String exeName = null;
+		try {
+			String clsStr = getPlatformClassifier();
+			DocumentBuilder xmlBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+			Document xmlDoc = xmlBuilder.parse(mdFile);
+			NodeList versions = xmlDoc.getElementsByTagName("snapshotVersion");
+			for (int i = 0; i < versions.getLength(); i++) {
+				Node ver = versions.item(i);
+				Node cls = null;
+				Node val = null;
+				for (int j = 0; j < ver.getChildNodes().getLength(); j++) {
+					Node n = ver.getChildNodes().item(j);
+					if (n.getNodeName().equals("classifier")) cls = n;
+					if (n.getNodeName().equals("value")) val = n;
+				}
+				if (cls != null && val != null && cls.getTextContent().equals(clsStr))	{
+					exeName = "protoc-" + val.getTextContent() + "-" + clsStr + ".exe";
+					break;
+				}
+			}
+		}
+		catch (Exception e) {
+			throw new IOException(e);
+		}
+		return exeName;
 	}
 
 	static File getWebcacheDir() throws IOException {
