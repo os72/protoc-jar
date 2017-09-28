@@ -11,7 +11,8 @@ Available on Maven Central: http://central.maven.org/maven2/com/github/os72/prot
 Simple convenience JAR that embeds protoc compiler binaries for Linux, Mac/OSX, and Windows, providing some portability across the major platforms. At runtime the library detects the platform and executes the corresponding protoc binary.
 Supports protoc versions 2.4.1, 2.5.0, 2.6.1, 3.4.0. Also supports downloading protoc from maven central
 
-New: protoc 3.4.0 support on POWER8 (ppc64le) platform, thanks to [Apache SystemML](https://github.com/apache/systemml) folks
+* New: Support for Linux on POWER8 platform (linux-ppcle_64), thanks to [Apache SystemML](https://github.com/apache/systemml) folks ([nakul02](https://github.com/nakul02))
+* New: Support for FreeBSD on x86 platform (freebsd-x86_64), thanks [kjopek](https://github.com/kjopek)
 
 See also
 * https://github.com/os72/protoc-jar-maven-plugin
@@ -19,6 +20,8 @@ See also
 * https://github.com/os72/protobuf-java-shaded-250
 * https://github.com/os72/protobuf-java-shaded-261
 * https://github.com/google/protobuf
+
+Binaries
 * http://central.maven.org/maven2/com/google/protobuf/protoc/
 * http://central.maven.org/maven2/com/github/os72/protoc/
 * https://oss.sonatype.org/content/repositories/snapshots/com/github/os72/protoc/
