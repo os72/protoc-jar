@@ -76,6 +76,11 @@
                   <type>exe</type>
                 </artifact>
                 <artifact>
+                  <file>protoc-2.6.1-linux-aarch_64.exe</file>
+                  <classifier>linux-aarch_64</classifier>
+                  <type>exe</type>
+                </artifact>
+                <artifact>
                   <file>protoc-2.6.1-linux-x86_64.exe</file>
                   <classifier>linux-x86_64</classifier>
                   <type>exe</type>
