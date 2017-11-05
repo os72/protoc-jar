@@ -13,6 +13,7 @@ Supports protoc versions 2.4.1, 2.5.0, 2.6.1, 3.4.0. Also supports downloading p
 
 * New: Support for Linux on POWER8 platform (linux-ppcle_64), thanks to [Apache SystemML](https://github.com/apache/systemml) folks ([nakul02](https://github.com/nakul02))
 * New: Support for FreeBSD on x86 platform (freebsd-x86_64), thanks [kjopek](https://github.com/kjopek)
+* In progress: Support for Linux on ARM platform (linux-aarch_64), thanks [garciagorka](https://github.com/garciagorka)
 
 See also
 * https://github.com/os72/protoc-jar-maven-plugin
