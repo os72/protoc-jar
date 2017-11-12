@@ -332,6 +332,7 @@ public class Protoc
 			is.close();
 			os.close();
 			destFile.getParentFile().mkdirs();
+			destFile.delete();
 			tmpFile.renameTo(destFile);
 			destFile.setLastModified(System.currentTimeMillis());
 		}
