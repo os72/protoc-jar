@@ -2,9 +2,9 @@ protoc-jar
 ==========
 
 Protocol Buffers protobuf compiler - multi-platform executable protoc JAR and API.
-Available on Maven Central: http://central.maven.org/maven2/com/github/os72/protoc-jar/3.4.0.1/
+Available on Maven Central: http://central.maven.org/maven2/com/github/os72/protoc-jar/3.4.0.2/
 
-[![Maven Central](https://img.shields.io/badge/maven%20central-3.4.0.1-brightgreen.svg)](http://search.maven.org/#artifactdetails|com.github.os72|protoc-jar|3.4.0.1|)
+[![Maven Central](https://img.shields.io/badge/maven%20central-3.4.0.2-brightgreen.svg)](http://search.maven.org/#artifactdetails|com.github.os72|protoc-jar|3.4.0.2|)
 
 ---
 
@@ -13,7 +13,7 @@ Supports protoc versions 2.4.1, 2.5.0, 2.6.1, 3.4.0. Also supports downloading p
 
 * New: Support for Linux on POWER8 platform (linux-ppcle_64), thanks to [Apache SystemML](https://github.com/apache/systemml) folks ([nakul02](https://github.com/nakul02))
 * New: Support for FreeBSD on x86 platform (freebsd-x86_64), thanks [kjopek](https://github.com/kjopek)
-* In progress: Support for Linux on ARM platform (linux-aarch_64), thanks [garciagorka](https://github.com/garciagorka)
+* New: Support for Linux on ARM platform (linux-aarch_64), thanks [garciagorka](https://github.com/garciagorka)
 
 See also
 * https://github.com/os72/protoc-jar-maven-plugin
@@ -36,31 +36,31 @@ Version support
 
 #### Usage - executable
 ```
-$ java -jar protoc-jar-3.4.0.1.jar -v2.4.1 --version
+$ java -jar protoc-jar-3.4.0.2.jar -v2.4.1 --version
 protoc-jar: protoc version: 2.4.1, detected platform: windows-x86_64 (windows 8.1/amd64)
 protoc-jar: embedded: bin/2.4.1/protoc-2.4.1-windows-x86_64.exe
 protoc-jar: executing: [C:\cygwin64\tmp\protocjar4043021753132417014\bin\protoc.exe, --version]
 libprotoc 2.4.1
 
-$ java -jar protoc-jar-3.4.0.1.jar -v2.5.0 --version
+$ java -jar protoc-jar-3.4.0.2.jar -v2.5.0 --version
 protoc-jar: protoc version: 2.5.0, detected platform: windows-x86_64 (windows 8.1/amd64)
 protoc-jar: embedded: bin/2.5.0/protoc-2.5.0-windows-x86_64.exe
 protoc-jar: executing: [C:\cygwin64\tmp\protocjar1249962506895049512\bin\protoc.exe, --version]
 libprotoc 2.5.0
 
-$ java -jar protoc-jar-3.4.0.1.jar -v2.6.1 --version
+$ java -jar protoc-jar-3.4.0.2.jar -v2.6.1 --version
 protoc-jar: protoc version: 2.6.1, detected platform: windows-x86_64 (windows 8.1/amd64)
 protoc-jar: embedded: bin/2.6.1/protoc-2.6.1-windows-x86_64.exe
 protoc-jar: executing: [C:\cygwin64\tmp\protocjar6776927966028536935\bin\protoc.exe, --version]
 libprotoc 2.6.1
 
-$ java -jar protoc-jar-3.4.0.1.jar -v3.4.0 --version
+$ java -jar protoc-jar-3.4.0.2.jar -v3.4.0 --version
 protoc-jar: protoc version: 3.4.0, detected platform: windows-x86_64 (windows 8.1/amd64)
 protoc-jar: embedded: bin/3.4.0/protoc-3.4.0-windows-x86_64.exe
 protoc-jar: executing: [C:\cygwin64\tmp\protocjar6721276946617095290\bin\protoc.exe, --version]
 libprotoc 3.4.0
 
-$ java -jar protoc-jar-3.4.0.1.jar -v3.1.0 --version
+$ java -jar protoc-jar-3.4.0.2.jar -v3.1.0 --version
 protoc-jar: protoc version: 3.1.0, detected platform: windows-x86_64 (windows 8.1/amd64)
 protoc-jar: downloading: http://central.maven.org/maven2/com/google/protobuf/protoc/maven-metadata.xml
 protoc-jar: saved: C:\cygwin64\tmp\protocjar.webcache\com\google\protobuf\protoc\maven-metadata.xml
@@ -75,7 +75,7 @@ libprotoc 3.1.0
 
 #### Usage - executable, include google.protobuf standard types (option --include_std_types)
 ```
-$ java -jar protoc-jar-3.4.0.1.jar --include_std_types -I. --java_out=out StdTypeExample.proto
+$ java -jar protoc-jar-3.4.0.2.jar --include_std_types -I. --java_out=out StdTypeExample.proto
 protoc-jar: protoc version: 3.4.0, detected platform: windows-x86_64 (windows 8.1/amd64)
 protoc-jar: embedded: bin/3.4.0/protoc-3.4.0-windows-x86_64.exe
 protoc-jar: executing: [C:\cygwin64\tmp\protocjar4162580735258750520\bin\protoc.exe, -IC:\cygwin64\tmp\protocjar4162580735258750520\include, -I., --java_out=out, StdTypeExample.proto]
@@ -83,7 +83,7 @@ protoc-jar: executing: [C:\cygwin64\tmp\protocjar4162580735258750520\bin\protoc.
 
 #### Usage - executable, apply shading for use with protobuf-java-shaded-241 (option --java_shaded_out)
 ```
-$ java -jar protoc-jar-3.4.0.1.jar -v2.4.1 --java_shaded_out=out PersonSchema.proto
+$ java -jar protoc-jar-3.4.0.2.jar -v2.4.1 --java_shaded_out=out PersonSchema.proto
 protoc-jar: protoc version: 2.4.1, detected platform: windows-x86_64 (windows 8.1/amd64)
 protoc-jar: embedded: bin/2.4.1/protoc-2.4.1-windows-x86_64.exe
 protoc-jar: executing: [C:\cygwin64\tmp\protocjar139806143399660474\bin\protoc.exe, --java_out=out, PersonSchema.proto]
@@ -104,6 +104,6 @@ Protoc.runProtoc(args);
 <dependency>
   <groupId>com.github.os72</groupId>
   <artifactId>protoc-jar</artifactId>
-  <version>3.4.0.1</version>
+  <version>3.4.0.2</version>
 </dependency>
 ```
