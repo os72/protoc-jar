@@ -29,6 +29,10 @@
       <id>os72</id>
       <name>Oliver Suciu</name>
     </developer>
+    <developer>
+      <id>nakul02</id>
+      <name>Nakul Jindal</name>
+    </developer>
   </developers>
 
   <scm>
@@ -68,17 +72,12 @@
                   <classifier>freebsd-x86_64</classifier>
                   <type>exe</type>
                 </artifact>
-                <artifact>
-                  <file>protoc-3.5.0-linux-aarch_64.exe</file>
-                  <classifier>linux-aarch_64</classifier>
-                  <type>exe</type>
-                </artifact>
+				-->
                 <artifact>
                   <file>protoc-3.5.0-linux-ppcle_64.exe</file>
                   <classifier>linux-ppcle_64</classifier>
                   <type>exe</type>
                 </artifact>
-				-->
                 <artifact>
                   <file>protoc-3.5.0-linux-x86_64.exe</file>
                   <classifier>linux-x86_64</classifier>
