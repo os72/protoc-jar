@@ -23,9 +23,9 @@
       	<include>2.*/*linux-x86_64*</include>
       	<include>2.*/*osx-x86_64*</include>
       	<include>2.*/*windows-x86_64*</include>
-      	<include>3.5.0/*linux-x86_64*</include>
-      	<include>3.5.0/*osx-x86_64*</include>
-      	<include>3.5.0/*windows-x86_64*</include>
+      	<include>3.5.1/*linux-x86_64*</include>
+      	<include>3.5.1/*osx-x86_64*</include>
+      	<include>3.5.1/*windows-x86_64*</include>
       </includes>
     </fileSet>
   </fileSets>
