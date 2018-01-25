@@ -148,6 +148,7 @@ public class Protoc
 				FileInputStream is = null;
 				FileOutputStream os = null;
 				try {
+					version = version.replace(".", "");
 					tmpFile = File.createTempFile(file.getName(), null);
 					pw = new PrintWriter(tmpFile);
 					br = new BufferedReader(new FileReader(file));
