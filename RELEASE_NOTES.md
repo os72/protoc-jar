@@ -1,6 +1,9 @@
 protoc-jar release notes
 ========================
 
+#### 3.5.1.1 (27-Jan-2018)
+* Fix regression in shading (due to incorrect version formatting)
+
 #### 3.5.1 (20-Jan-2018)
 * Upgrade to protoc 3.5.1
 * Supports FreeBSD/x86, Linux/POWER8 (freebsd-x86_64, linux-ppcle_64)
