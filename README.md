@@ -91,6 +91,20 @@ protoc-jar: executing: [C:\cygwin64\tmp\protocjar139806143399660474\bin\protoc.e
 protoc-jar: shading (version 2.4.1): out
 ```
 
+#### Usage - run platform detector (option -pp, print platform, usually for debugging)
+```
+$ java -jar protoc-jar-3.5.1.1.jar -pp
+------------------------------------------------------------------------
+Detecting the operating system and CPU architecture
+------------------------------------------------------------------------
+os.detected.name: windows
+os.detected.arch: x86_64
+os.detected.version: 6.3
+os.detected.version.major: 6
+os.detected.version.minor: 3
+os.detected.classifier: windows-x86_64
+```
+
 #### Usage - API
 ```java
 import com.github.os72.protocjar.Protoc;
