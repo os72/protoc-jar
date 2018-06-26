@@ -59,6 +59,10 @@ public class Protoc
 	}
 
 	public static int runProtoc(String[] args) throws IOException, InterruptedException {
+		return runProtoc(args, System.out, System.err)	;
+	}
+
+	public static int runProtoc(String[] args, OutputStream out, OutputStream err) throws IOException, InterruptedException {
 		ProtocVersion protocVersion = ProtocVersion.PROTOC_VERSION;
 		boolean includeStdTypes = false;
 		for (String arg : args) {
@@ -69,7 +73,7 @@ public class Protoc
 		
 		try {
 			File protocTemp = extractProtoc(protocVersion, includeStdTypes, null);
-			return runProtoc(protocTemp.getAbsolutePath(), Arrays.asList(args));
+			return runProtoc(protocTemp.getAbsolutePath(), Arrays.asList(args), out, err);
 		}
 		catch (FileNotFoundException e) {
 			throw e;
@@ -87,6 +91,10 @@ public class Protoc
 	}
 
 	public static int runProtoc(String cmd, List<String> argList) throws IOException, InterruptedException {
+		return runProtoc(cmd, argList, System.out, System.err);
+	}
+
+	public static int runProtoc(String cmd, List<String> argList, OutputStream out, OutputStream err) throws IOException, InterruptedException {
 		ProtocVersion protocVersion = ProtocVersion.PROTOC_VERSION;
 		String javaShadedOutDir = null;
 		
@@ -122,8 +130,8 @@ public class Protoc
 			}
 		}
 		
-		new Thread(new StreamCopier(protoc.getInputStream(), System.out)).start();
-		new Thread(new StreamCopier(protoc.getErrorStream(), System.err)).start();
+		new Thread(new StreamCopier(protoc.getInputStream(), out)).start();
+		new Thread(new StreamCopier(protoc.getErrorStream(), err)).start();
 		int exitCode = protoc.waitFor();
 		
 		if (javaShadedOutDir != null) {
