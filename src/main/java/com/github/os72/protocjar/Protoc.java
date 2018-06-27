@@ -59,7 +59,7 @@ public class Protoc
 	}
 
 	public static int runProtoc(String[] args) throws IOException, InterruptedException {
-		return runProtoc(args, System.out, System.err)	;
+		return runProtoc(args, System.out, System.err);
 	}
 
 	public static int runProtoc(String[] args, OutputStream out, OutputStream err) throws IOException, InterruptedException {
@@ -82,7 +82,7 @@ public class Protoc
 			// some linuxes don't allow exec in /tmp, try user home
 			String homeDir = System.getProperty("user.home");
 			File protocTemp = extractProtoc(protocVersion, includeStdTypes, new File(homeDir));
-			return runProtoc(protocTemp.getAbsolutePath(), Arrays.asList(args));
+			return runProtoc(protocTemp.getAbsolutePath(), Arrays.asList(args), out, err);
 		}
 	}
 
