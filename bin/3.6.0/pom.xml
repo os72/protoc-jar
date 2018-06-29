@@ -75,13 +75,11 @@
                   <classifier>freebsd-x86_64</classifier>
                   <type>exe</type>
                 </artifact>
-				<!--
                 <artifact>
                   <file>protoc-3.6.0-linux-ppcle_64.exe</file>
                   <classifier>linux-ppcle_64</classifier>
                   <type>exe</type>
                 </artifact>
-				-->
                 <artifact>
                   <file>protoc-3.6.0-linux-x86_64.exe</file>
                   <classifier>linux-x86_64</classifier>
