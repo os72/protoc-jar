@@ -20,7 +20,7 @@ import java.util.Map;
 
 public class ProtocVersion
 {
-	public static final ProtocVersion PROTOC_VERSION = new ProtocVersion(null, null, "3.5.1");
+	public static final ProtocVersion PROTOC_VERSION = new ProtocVersion(null, null, "3.6.0");
 
 	public static ProtocVersion getVersion(String spec) {
 		if (!spec.startsWith("-v")) return null;
