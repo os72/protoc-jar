@@ -47,6 +47,7 @@ public class Protoc
 		try {
 			if (args.length > 0 && args[0].equals("-pp")) { // print platform
 				PlatformDetector.main(args);
+				System.out.println("Detected platform: " + getPlatformVerbose());
 				return;
 			}
 			int exitCode = runProtoc(args);
