@@ -91,6 +91,11 @@
                   <type>exe</type>
                 </artifact>
                 <artifact>
+                  <file>protoc-2.5.0-sunos-x86_64.exe</file>
+                  <classifier>sunos-x86_64</classifier>
+                  <type>exe</type>
+                </artifact>
+                <artifact>
                   <file>protoc-2.5.0-windows-x86_64.exe</file>
                   <classifier>windows-x86_64</classifier>
                   <type>exe</type>

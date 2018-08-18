@@ -100,6 +100,11 @@
                   <type>exe</type>
                 </artifact>
                 <artifact>
+                  <file>protoc-3.4.0-sunos-x86_64.exe</file>
+                  <classifier>sunos-x86_64</classifier>
+                  <type>exe</type>
+                </artifact>
+                <artifact>
                   <file>protoc-3.4.0-windows-x86_64.exe</file>
                   <classifier>windows-x86_64</classifier>
                   <type>exe</type>
