@@ -5,7 +5,7 @@
   <groupId>com.github.os72</groupId>
   <artifactId>protoc</artifactId>
   <packaging>pom</packaging>
-  <version>3.5.1</version>
+  <version>3.5.1-SNAPSHOT</version>
   <name>protoc</name>
   <url>https://github.com/os72/protoc-jar</url>
   <description>Protocol Buffers compiler - executable</description>
@@ -36,6 +36,10 @@
     <developer>
       <id>kjopek</id>
       <name>kjopek</name>
+    </developer>
+    <developer>
+      <id>siepkes</id>
+      <name>Jasper Siepkes</name>
     </developer>
   </developers>
 
