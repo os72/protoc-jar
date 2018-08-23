@@ -103,6 +103,7 @@
                   <classifier>osx-x86_64</classifier>
                   <type>exe</type>
                 </artifact>
+                <artifact>
                  <file>protoc-2.6.1-sunos-x86_64.exe</file>
                   <classifier>sunos-x86_64</classifier>
                   <type>exe</type>
