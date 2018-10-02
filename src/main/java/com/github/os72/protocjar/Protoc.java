@@ -333,11 +333,11 @@ public class Protoc
 		InputStream is = null;
 		FileOutputStream os = null;
 		try {
+			log("downloading: " + srcUrl);
 			URLConnection con = srcUrl.openConnection();
 			con.setRequestProperty("User-Agent", "Mozilla"); // sonatype only returns proper maven-metadata.xml if this is set
 			is = con.getInputStream();
 			os = new FileOutputStream(tmpFile);
-			log("downloading: " + srcUrl);
 			streamCopy(is, os);
 			is.close();
 			os.close();
