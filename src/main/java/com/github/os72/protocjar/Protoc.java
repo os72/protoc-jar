@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -337,8 +336,8 @@ public class Protoc
 			log("downloading: " + srcUrl);
 			URLConnection con = srcUrl.openConnection();
 			con.setRequestProperty("User-Agent", "Mozilla"); // sonatype only returns proper maven-metadata.xml if this is set
-			con.setConnectTimeout(5000);
-			con.setReadTimeout(5000);
+			con.setConnectTimeout(5000); // 5 sec timeout
+			con.setReadTimeout(5000); // 5 sec timeout
 			is = con.getInputStream();
 			os = new FileOutputStream(tmpFile);
 			streamCopy(is, os);
@@ -348,13 +347,12 @@ public class Protoc
 			destFile.delete();
 			tmpFile.renameTo(destFile);
 			destFile.setLastModified(System.currentTimeMillis());
-
-		} catch (SocketTimeoutException e) {
-			log(e);
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			tmpFile.delete();
 			if (!destFile.exists()) throw e; // if download failed but had cached version, ignore exception
-		} finally {
+		}
+		finally {
 			if (is != null) is.close();
 			if (os != null) os.close();
 		}
