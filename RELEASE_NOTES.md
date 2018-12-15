@@ -1,6 +1,12 @@
 protoc-jar release notes
 ========================
 
+#### 3.6.0.1 (15-Dec-2018)
+* Fix: download can fail/freeze silently (issue #56)
+* Set download connection timeout (5 sec)
+* Supports FreeBSD/x86, Solaris/x86, Linux/POWER8 (freebsd-x86_64, sunos-x86_64, linux-ppcle_64)
+* Supports Linux/ARM, provided by Google (linux-aarch_64)
+
 #### 3.6.0 (30-Jun-2018)
 * Upgrade to protoc 3.6.0
 * Support capturing stdout/stderr in API (issue #48)
