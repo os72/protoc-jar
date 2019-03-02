@@ -268,7 +268,7 @@ public class Protoc
 			return downloadProtocSnapshot(protocVersion, downloadPath);
 		}
 		
-		String releaseUrlStr = "http://central.maven.org/maven2/";
+		String releaseUrlStr = "https://repo.maven.apache.org/maven2/";
 		File webcacheDir = getWebcacheDir();
 		
 		// download maven-metadata.xml (cache for 8hrs)
