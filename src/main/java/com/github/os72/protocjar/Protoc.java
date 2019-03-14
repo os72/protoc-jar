@@ -38,6 +38,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -268,7 +269,7 @@ public class Protoc
 			return downloadProtocSnapshot(protocVersion, downloadPath);
 		}
 		
-		String releaseUrlStr = "https://repo.maven.apache.org/maven2/";
+		String releaseUrlStr = getMavenCentralUrl();
 		File webcacheDir = getWebcacheDir();
 		
 		// download maven-metadata.xml (cache for 8hrs)
@@ -462,6 +463,26 @@ public class Protoc
 			throw new IOException(e);
 		}
 		return exeName;
+	}
+
+	static String getMavenCentralUrl() {
+		try {
+			String homeDir = System.getProperty("user.home");
+			File mavenSettings = new File(homeDir, ".m2/settings.xml");
+			DocumentBuilder xmlBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+			Document xmlDoc = xmlBuilder.parse(mavenSettings);
+			NodeList mirrorList = xmlDoc.getDocumentElement().getElementsByTagName("mirror");
+			for (int i = 0; i < mirrorList.getLength(); i++) {
+				Element mirror = (Element)mirrorList.item(i);
+				String url = mirror.getElementsByTagName("url").item(0).getTextContent().trim();
+				String mirrorOf = mirror.getElementsByTagName("mirrorOf").item(0).getTextContent().trim();
+				if (mirrorOf.equals("central") || mirrorOf.contains("*")) return url;
+			}
+		}
+		catch (Exception e) {
+			log(e);
+		}
+		return "https://repo.maven.apache.org/maven2/";
 	}
 
 	static File getWebcacheDir() throws IOException {
