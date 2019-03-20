@@ -33,7 +33,7 @@ public class URLSpec
 
 	public URLSpec(String url, String host, int port) throws MalformedURLException {
 		mUrl = new URL(url);
-		mProxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(host, port));
+		if (host != null) mProxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(host, port));
 	}
 	public URLSpec(String url, Proxy proxy) throws MalformedURLException {
 		mUrl = new URL(url);
