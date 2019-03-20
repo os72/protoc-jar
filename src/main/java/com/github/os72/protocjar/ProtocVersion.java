@@ -15,9 +15,6 @@
  */
 package com.github.os72.protocjar;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class ProtocVersion
 {
 	public static final ProtocVersion PROTOC_VERSION = new ProtocVersion(null, null, "3.7.0");
