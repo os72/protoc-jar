@@ -22,9 +22,10 @@ import org.junit.Test;
 
 public class URLSpecTest
 {
+	// enable this if a test proxy is available (eg, squid)
 	//@Test
-	public void testMavenProxy() throws Exception {
-		log("testMavenProxy");
+	public void testURLSpec() throws Exception {
+		log("testURLSpec");
 		URLSpec srcUrl = new URLSpec("https://repo.maven.apache.org/maven2/", "localhost", 3128);
 		URLConnection con = srcUrl.openConnection();
 		InputStream is = con.getInputStream();
