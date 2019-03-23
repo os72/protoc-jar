@@ -1,6 +1,9 @@
 protoc-jar release notes
 ========================
 
+#### 3.7.0.1 (22-Mar-2019)
+* Support download via maven mirror and/or proxy (issue #57)
+
 #### 3.7.0 (4-Mar-2019, 13-Mar-2019)
 * Upgrade to protoc 3.7.0
 * Update maven central download URL (https://repo.maven.apache.org/maven2/)
