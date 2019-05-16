@@ -17,6 +17,7 @@ package com.github.os72.protocjar;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -41,12 +42,14 @@ public class MavenUtil
 	static URLSpec getReleaseDownloadUrl(String path, MavenSettings settings) throws IOException {
 		String url = settings.mCentralUrl;
 		if (settings.mMirrorUrl != null) url = settings.mMirrorUrl;
-		return new URLSpec(url + path, settings.mProxyHost, settings.mProxyPort);
+		String fullpath = URI.create(url + "/" + path).normalize().toString();
+		return new URLSpec(fullpath, settings.mProxyHost, settings.mProxyPort);
 	}
 	// get snapshot download URL
 	static URLSpec getSnapshotDownloadUrl(String path, MavenSettings settings) throws IOException {
 		String url = settings.mSnapshotUrl;
-		return new URLSpec(url + path, settings.mProxyHost, settings.mProxyPort);
+		String fullpath = URI.create(url + "/" + path).normalize().toString();
+		return new URLSpec(fullpath, settings.mProxyHost, settings.mProxyPort);
 	}
 
 	// get maven settings
