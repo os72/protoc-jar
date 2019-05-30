@@ -55,7 +55,7 @@ public class MavenUtilTest
 		log("testParseSnapshotExeName");
 		File mdFile = new File("src/test/resources/maven-metadata-snapshot.xml");
 		String name = MavenUtil.parseSnapshotExeName(mdFile);
-    	Properties props = new Properties();
+		Properties props = new Properties();
 		new PlatformDetector().detect(props, null);
 		String osName = props.getProperty(PlatformDetector.DETECTED_NAME);
 		
