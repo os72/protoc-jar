@@ -2,7 +2,7 @@ protoc-jar
 ==========
 
 Protocol Buffers protobuf compiler - multi-platform executable protoc JAR and API.
-Available on Maven Central: http://central.maven.org/maven2/com/github/os72/protoc-jar/3.8.0/
+Available on Maven Central: https://repo.maven.apache.org/maven2/com/github/os72/protoc-jar/3.8.0/
 
 [![Maven Central](https://img.shields.io/badge/maven%20central-3.8.0-brightgreen.svg)](http://search.maven.org/#artifactdetails|com.github.os72|protoc-jar|3.8.0|)
 
