@@ -1,6 +1,9 @@
 protoc-jar release notes
 ========================
 
+#### 3.8.0 (9-Jun-2019)
+* Upgrade to protoc 3.8.0 (issue #71)
+
 #### 3.7.1 (16-May-2019)
 * Upgrade to protoc 3.7.1 (issue #66)
 * Fix: normalize download URL path (issue #67)
