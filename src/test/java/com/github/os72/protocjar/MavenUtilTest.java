@@ -19,6 +19,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import java.io.File;
+import java.util.Properties;
 
 import org.junit.Test;
 
@@ -45,7 +46,7 @@ public class MavenUtilTest
 		assertEquals("2.4.1-build3", build);
 		build = MavenUtil.parseLastReleaseBuild(mdFile, new ProtocVersion(null, null, "3.5.1"));
 		assertEquals("3.5.1-build2", build);
-		build = MavenUtil.parseLastReleaseBuild(mdFile, new ProtocVersion(null, null, "3.7.0"));
+		build = MavenUtil.parseLastReleaseBuild(mdFile, new ProtocVersion(null, null, "3.8.0"));
 		assertNull(build);
 	}
 
@@ -54,7 +55,11 @@ public class MavenUtilTest
 		log("testParseSnapshotExeName");
 		File mdFile = new File("src/test/resources/maven-metadata-snapshot.xml");
 		String name = MavenUtil.parseSnapshotExeName(mdFile);
-		assertEquals("protoc-2.4.1-20180823.052533-7-windows-x86_64.exe", name);
+		Properties props = new Properties();
+		new PlatformDetector().detect(props, null);
+		String osName = props.getProperty(PlatformDetector.DETECTED_NAME);
+		
+		assertEquals(String.format("protoc-2.4.1-20180823.052533-7-%s-x86_64.exe", osName), name);
 	}
 
 	static void log(Object msg) {
