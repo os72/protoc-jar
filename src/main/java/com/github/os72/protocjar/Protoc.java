@@ -24,6 +24,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -39,7 +40,7 @@ public class Protoc
 		try {
 			if (args.length > 0 && args[0].equals("-pp")) { // print platform
 				PlatformDetector.main(args);
-				System.out.println("Detected platform: " + getPlatformVerbose());
+				log("Detected platform: " + getPlatformVerbose());
 				return;
 			}
 			int exitCode = runProtoc(args);
@@ -56,6 +57,10 @@ public class Protoc
 	}
 
 	public static int runProtoc(String[] args, OutputStream out, OutputStream err) throws IOException, InterruptedException {
+		return runProtoc(args, out, err, System.out);
+	}
+
+	public static int runProtoc(String[] args, OutputStream out, OutputStream err, PrintStream debug) throws IOException, InterruptedException {
 		ProtocVersion protocVersion = ProtocVersion.PROTOC_VERSION;
 		boolean includeStdTypes = false;
 		for (String arg : args) {
@@ -65,8 +70,8 @@ public class Protoc
 		}
 		
 		try {
-			File protocTemp = extractProtoc(protocVersion, includeStdTypes, null);
-			return runProtoc(protocTemp.getAbsolutePath(), Arrays.asList(args), out, err);
+			File protocTemp = extractProtoc(protocVersion, includeStdTypes, null, debug);
+			return runProtoc(protocTemp.getAbsolutePath(), Arrays.asList(args), out, err, debug);
 		}
 		catch (FileNotFoundException e) {
 			throw e;
@@ -74,8 +79,8 @@ public class Protoc
 		catch (Exception e) {
 			// some linuxes don't allow exec in /tmp, try user home
 			String homeDir = System.getProperty("user.home");
-			File protocTemp = extractProtoc(protocVersion, includeStdTypes, new File(homeDir));
-			return runProtoc(protocTemp.getAbsolutePath(), Arrays.asList(args), out, err);
+			File protocTemp = extractProtoc(protocVersion, includeStdTypes, new File(homeDir), debug);
+			return runProtoc(protocTemp.getAbsolutePath(), Arrays.asList(args), out, err, debug);
 		}
 	}
 
@@ -88,6 +93,10 @@ public class Protoc
 	}
 
 	public static int runProtoc(String cmd, List<String> argList, OutputStream out, OutputStream err) throws IOException, InterruptedException {
+		return runProtoc(cmd, argList, out, err, System.out);
+	}
+
+	public static int runProtoc(String cmd, List<String> argList, OutputStream out, OutputStream err, PrintStream debug) throws IOException, InterruptedException {
 		ProtocVersion protocVersion = ProtocVersion.PROTOC_VERSION;
 		String javaShadedOutDir = null;
 		
@@ -112,13 +121,13 @@ public class Protoc
 		int numTries = 1;
 		while (protoc == null) {
 			try {
-				log("executing: " + protocCmd);
+				log(debug, "executing: " + protocCmd);
 				ProcessBuilder pb = new ProcessBuilder(protocCmd);
 				protoc = pb.start();
 			}
 			catch (IOException ioe) {
 				if (numTries++ >= 3) throw ioe; // retry loop, workaround text file busy issue
-				log("caught exception, retrying: " + ioe);
+				log(debug, "caught exception, retrying: " + ioe);
 				Thread.sleep(1000);
 			}
 		}
@@ -128,21 +137,25 @@ public class Protoc
 		int exitCode = protoc.waitFor();
 		
 		if (javaShadedOutDir != null) {
-			log("shading (version " + protocVersion + "): " + javaShadedOutDir);
-			doShading(new File(javaShadedOutDir), protocVersion.mVersion);
+			log(debug, "shading (version " + protocVersion + "): " + javaShadedOutDir);
+			doShading(new File(javaShadedOutDir), protocVersion.mVersion, debug);
 		}
 		
 		return exitCode;
 	}
 
 	public static void doShading(File dir, String version) throws IOException {
+		doShading(dir, version, System.out);
+	}
+
+	public static void doShading(File dir, String version, PrintStream debug) throws IOException {
 		if (dir.listFiles() == null) return;
 		for (File file : dir.listFiles()) {
 			if (file.isDirectory()) {
-				doShading(file, version);
+				doShading(file, version, debug);
 			}
 			else if (file.getName().endsWith(".java")) {
-				//log(file.getPath());
+				//log(debug, file.getPath());
 				File tmpFile = null;
 				PrintWriter pw = null;
 				BufferedReader br = null;
@@ -160,7 +173,7 @@ public class Protoc
 					pw.close();
 					br.close();
 					// tmpFile.renameTo(file) only works on same filesystem, make copy instead:
-					if (!file.delete()) log("Failed to delete: " + file.getName());
+					if (!file.delete()) log(debug, "Failed to delete: " + file.getName());
 					is = new FileInputStream(tmpFile);
 					os = new FileOutputStream(file);
 					streamCopy(is, os);
@@ -181,13 +194,21 @@ public class Protoc
 	}
 
 	public static File extractProtoc(ProtocVersion protocVersion, boolean includeStdTypes, File dir) throws IOException {
-		File protocTemp = extractProtoc(protocVersion, dir);
+		return extractProtoc(protocVersion, includeStdTypes, dir, System.out);
+	}
+
+	public static File extractProtoc(ProtocVersion protocVersion, boolean includeStdTypes, File dir, PrintStream debug) throws IOException {
+		File protocTemp = extractProtoc(protocVersion, dir, debug);
 		if (includeStdTypes) extractStdTypes(protocVersion, protocTemp.getParentFile().getParentFile());
 		return protocTemp;
 	}
 
 	public static File extractProtoc(ProtocVersion protocVersion, File dir) throws IOException {
-		log("protoc version: " + protocVersion + ", detected platform: " + getPlatformVerbose());
+		return extractProtoc(protocVersion, dir, System.out);
+	}
+
+	public static File extractProtoc(ProtocVersion protocVersion, File dir, PrintStream debug) throws IOException {
+		log(debug, "protoc version: " + protocVersion + ", detected platform: " + getPlatformVerbose());
 		
 		File tmpDir = File.createTempFile("protocjar", "", dir);
 		tmpDir.delete(); tmpDir.mkdirs();
@@ -203,21 +224,21 @@ public class Protoc
 			try {
 				File protocTemp = new File(binDir, "protoc.exe");
 				populateFile(srcFilePath, protocTemp);
-				log("embedded: " + srcFilePath);
+				log(debug, "embedded: " + srcFilePath);
 				protocTemp.setExecutable(true);
 				protocTemp.deleteOnExit();
 				return protocTemp;
 			}
 			catch (FileNotFoundException e) {
-				//log(e);
+				//log(debug, e);
 			}
 			
 			// look in cache and maven central
-			exeFile = findDownloadProtoc(protocVersion);
+			exeFile = findDownloadProtoc(protocVersion, debug);
 		}
 		else { // download by artifact id from maven central
 			String downloadPath = protocVersion.mGroup.replace(".", "/") + "/" + protocVersion.mArtifact + "/";
-			exeFile = downloadProtoc(protocVersion, downloadPath, true);
+			exeFile = downloadProtoc(protocVersion, downloadPath, true, debug);
 		}
 		
 		if (exeFile == null) throw new FileNotFoundException("Unsupported platform: " + getProtocExeName(protocVersion));
@@ -230,25 +251,29 @@ public class Protoc
 	}
 
 	public static File findDownloadProtoc(ProtocVersion protocVersion) throws IOException {
+		return findDownloadProtoc(protocVersion, System.out);
+	}
+
+	public static File findDownloadProtoc(ProtocVersion protocVersion, PrintStream debug) throws IOException {
 		// look only for cached versions first
 		for (String downloadPath : sDdownloadPaths) {
 			try {
-				File exeFile = downloadProtoc(protocVersion, downloadPath, false);
+				File exeFile = downloadProtoc(protocVersion, downloadPath, false, debug);
 				if (exeFile != null) return exeFile;
 			}
 			catch (IOException e) {
-				//log(e);
+				//log(debug, e);
 			}
 		}
 		
 		// look on maven central
 		for (String downloadPath : sDdownloadPaths) {
 			try {
-				File exeFile = downloadProtoc(protocVersion, downloadPath, true);
+				File exeFile = downloadProtoc(protocVersion, downloadPath, true, debug);
 				if (exeFile != null) return exeFile;
 			}
 			catch (IOException e) {
-				//log(e);
+				//log(debug, e);
 			}
 		}
 		
@@ -256,8 +281,12 @@ public class Protoc
 	}
 
 	public static File downloadProtoc(ProtocVersion protocVersion, String downloadPath, boolean trueDownload) throws IOException {
+		return downloadProtoc(protocVersion, downloadPath, trueDownload, System.out);
+	}
+
+	public static File downloadProtoc(ProtocVersion protocVersion, String downloadPath, boolean trueDownload, PrintStream debug) throws IOException {
 		if (protocVersion.mVersion.endsWith("-SNAPSHOT")) {
-			return downloadProtocSnapshot(protocVersion, downloadPath);
+			return downloadProtocSnapshot(protocVersion, downloadPath, debug);
 		}
 		
 		MavenUtil.MavenSettings settings = MavenUtil.getMavenSettings();
@@ -267,7 +296,7 @@ public class Protoc
 		String mdSubPath = "maven-metadata.xml";
 		URLSpec mdUrl = MavenUtil.getReleaseDownloadUrl(downloadPath + mdSubPath, settings);
 		File mdFile = new File(webcacheDir, downloadPath + mdSubPath);
-		mdFile = downloadFile(mdUrl, mdFile, 8*3600*1000);
+		mdFile = downloadFile(mdUrl, mdFile, 8*3600*1000, debug);
 		
 		// find last build (if any) from maven-metadata.xml
 		try {
@@ -277,7 +306,7 @@ public class Protoc
 			}
 		}
 		catch (IOException e) {
-			//log(e);
+			//log(debug, e);
 		}
 		
 		// download exe
@@ -285,16 +314,20 @@ public class Protoc
 		URLSpec exeUrl = MavenUtil.getReleaseDownloadUrl(downloadPath + exeSubPath, settings);
 		File exeFile = new File(webcacheDir, downloadPath + exeSubPath);
 		if (trueDownload) {
-			return downloadFile(exeUrl, exeFile, 0);
+			return downloadFile(exeUrl, exeFile, 0, debug);
 		}
 		else if (exeFile.exists()) { // cache only
-			log("cached: " + exeFile);
+			log(debug, "cached: " + exeFile);
 			return exeFile;
 		}
 		return null;
 	}
 
 	public static File downloadProtocSnapshot(ProtocVersion protocVersion, String downloadPath) throws IOException {
+		return downloadProtocSnapshot(protocVersion, downloadPath, System.out);
+	}
+
+	public static File downloadProtocSnapshot(ProtocVersion protocVersion, String downloadPath, PrintStream debug) throws IOException {
 		MavenUtil.MavenSettings settings = MavenUtil.getMavenSettings();
 		File webcacheDir = getWebcacheDir();
 		
@@ -302,7 +335,7 @@ public class Protoc
 		String mdSubPath = protocVersion.mVersion + "/maven-metadata.xml";
 		URLSpec mdUrl = MavenUtil.getSnapshotDownloadUrl(downloadPath + mdSubPath, settings);
 		File mdFile = new File(webcacheDir, downloadPath + mdSubPath);
-		mdFile = downloadFile(mdUrl, mdFile, 8*3600*1000);
+		mdFile = downloadFile(mdUrl, mdFile, 8*3600*1000, debug);
 		
 		// parse exe name from maven-metadata.xml
 		String exeName = MavenUtil.parseSnapshotExeName(mdFile);
@@ -312,12 +345,16 @@ public class Protoc
 		String exeSubPath = protocVersion.mVersion + "/" + exeName;
 		URLSpec exeUrl = MavenUtil.getSnapshotDownloadUrl(downloadPath + exeSubPath, settings);
 		File exeFile = new File(webcacheDir, downloadPath + exeSubPath);
-		return downloadFile(exeUrl, exeFile, 0);
+		return downloadFile(exeUrl, exeFile, 0, debug);
 	}
 
 	public static File downloadFile(URLSpec srcUrl, File destFile, long cacheTime) throws IOException {
+		return downloadFile(srcUrl, destFile, cacheTime, System.out);
+	}
+
+	public static File downloadFile(URLSpec srcUrl, File destFile, long cacheTime, PrintStream debug) throws IOException {
 		if (destFile.exists() && ((cacheTime <= 0) || (System.currentTimeMillis() - destFile.lastModified() <= cacheTime))) {
-			log("cached: " + destFile);
+			log(debug, "cached: " + destFile);
 			return destFile;
 		}
 		
@@ -325,7 +362,7 @@ public class Protoc
 		InputStream is = null;
 		FileOutputStream os = null;
 		try {
-			log("downloading: " + srcUrl);
+			log(debug, "downloading: " + srcUrl);
 			URLConnection con = srcUrl.openConnection();
 			con.setRequestProperty("User-Agent", "Mozilla"); // sonatype only returns proper maven-metadata.xml if this is set
 			con.setConnectTimeout(5000); // 5 sec timeout
@@ -349,7 +386,7 @@ public class Protoc
 			if (os != null) os.close();
 		}
 		
-		log("saved: " + destFile);
+		log(debug, "saved: " + destFile);
 		return destFile;
 	}
 
@@ -429,7 +466,15 @@ public class Protoc
 	}
 
 	static void log(Object msg) {
-		System.out.println("protoc-jar: " + msg);
+		log(null, msg);
+	}
+
+	private static void log(PrintStream debug, Object msg) {
+		if (debug != null) {
+			debug.println(msg);
+		} else {
+			System.out.println("protoc-jar: " + msg);
+		}
 	}
 
 	static class StreamCopier implements Runnable
