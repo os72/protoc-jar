@@ -1,6 +1,9 @@
 protoc-jar release notes
 ========================
 
+#### 3.9.2 (28-Nov-2019)
+* Upgrade to protoc 3.9.2 (issue #72)
+
 #### 3.8.0 (9-Jun-2019)
 * Upgrade to protoc 3.8.0 (issue #71)
 
