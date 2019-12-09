@@ -44,7 +44,7 @@ public class ProtocTest
 			assertEquals(0, Protoc.runProtoc(args));
 		}
 		{
-			String[] args = {"--version", "-v3.10.1"};
+			String[] args = {"--version", "-v3.11.1"};
 			assertEquals(0, Protoc.runProtoc(args));
 		}
 		{
@@ -84,7 +84,7 @@ public class ProtocTest
 		{
 			String outDir = "target/test-protoc-stdtypes";
 			new File(outDir).mkdirs();
-			String[] args = {"-v3.10.1", "--include_std_types", "-I.", "--java_out="+outDir, sStdTypeExampleFile3};
+			String[] args = {"-v3.11.1", "--include_std_types", "-I.", "--java_out="+outDir, sStdTypeExampleFile3};
 			assertEquals(0, Protoc.runProtoc(args));
 		}
 	}
@@ -121,6 +121,13 @@ public class ProtocTest
 			String outDir = "target/test-protoc-shaded-261";
 			new File(outDir).mkdirs();
 			String[] args = {"-v2.6.1", "--java_shaded_out="+outDir, sPersonSchemaFile};
+			assertEquals(0, Protoc.runProtoc(args));
+			assertHasGeneratedFile(outDir);
+		}
+		{
+			String outDir = "target/test-protoc-shaded-3-11-1";
+			new File(outDir).mkdirs();
+			String[] args = {"-v3.11.1", "--java_shaded_out="+outDir, sPersonSchemaFile};
 			assertEquals(0, Protoc.runProtoc(args));
 			assertHasGeneratedFile(outDir);
 		}
