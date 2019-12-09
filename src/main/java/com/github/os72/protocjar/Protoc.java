@@ -149,7 +149,8 @@ public class Protoc
 				FileInputStream is = null;
 				FileOutputStream os = null;
 				try {
-					version = version.replace(".", "");
+					if (version.length() <= 5) version = version.replace(".", ""); // "1.2.3" -> "123"
+					else version = "_" + version.replace(".", "_"); // "3.11.1" -> "_3_11_1"
 					tmpFile = File.createTempFile(file.getName(), null);
 					pw = new PrintWriter(tmpFile);
 					br = new BufferedReader(new FileReader(file));
