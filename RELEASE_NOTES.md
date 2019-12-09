@@ -1,6 +1,10 @@
 protoc-jar release notes
 ========================
 
+#### 3.11.1 (8-Dec-2019)
+* Upgrade to protoc 3.11.1
+* Small enhancement for shading naming convention
+
 #### 3.10.1 (28-Nov-2019)
 * Upgrade to protoc 3.10.1 (issue #73)
 
