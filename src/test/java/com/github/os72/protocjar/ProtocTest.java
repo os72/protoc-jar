@@ -15,9 +15,9 @@
  */
 package com.github.os72.protocjar;
 
-import java.io.File;
-
 import org.junit.Test;
+
+import java.io.File;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -98,6 +98,15 @@ public class ProtocTest
 			String[] args = {"-v2.4.1", "--java_out="+outDir, sPersonSchemaFile};
 			assertEquals(0, Protoc.runProtoc(args));
 		}
+	}
+
+	@Test
+	public void testJavaShadingVersion() {
+		log("testJavaShadingVersion");
+		assertEquals("123", Protoc.javaShadingVersion("1.2.3"));
+		assertEquals("123", Protoc.javaShadingVersion("123"));
+		assertEquals("_3_11_1", Protoc.javaShadingVersion("3.11.1"));
+		assertEquals("_3_11_1", Protoc.javaShadingVersion("_3_11_1"));
 	}
 
 	@Test

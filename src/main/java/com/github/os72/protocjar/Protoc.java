@@ -149,8 +149,7 @@ public class Protoc
 				FileInputStream is = null;
 				FileOutputStream os = null;
 				try {
-					if (version.length() <= 5) version = version.replace(".", ""); // "1.2.3" -> "123"
-					else version = "_" + version.replace(".", "_"); // "3.11.1" -> "_3_11_1"
+					version = javaShadingVersion(version);
 					tmpFile = File.createTempFile(file.getName(), null);
 					pw = new PrintWriter(tmpFile);
 					br = new BufferedReader(new FileReader(file));
@@ -174,6 +173,16 @@ public class Protoc
 					if (tmpFile != null) tmpFile.delete();
 				}
 			}
+		}
+	}
+
+	static String javaShadingVersion(String version) {
+		if (!version.contains(".")) {
+			return version;
+		} else if (version.length() <= 5) {
+			return version.replace(".", ""); // "1.2.3" -> "123"
+		} else {
+			return "_" + version.replace(".", "_");
 		}
 	}
 
