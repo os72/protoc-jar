@@ -103,10 +103,10 @@ public class ProtocTest
 	@Test
 	public void testJavaShadingVersion() {
 		log("testJavaShadingVersion");
-		assertEquals("123", Protoc.javaShadingVersion("1.2.3"));
-		assertEquals("123", Protoc.javaShadingVersion("123"));
-		assertEquals("_3_11_1", Protoc.javaShadingVersion("3.11.1"));
-		assertEquals("_3_11_1", Protoc.javaShadingVersion("_3_11_1"));
+		assertEquals("123", Protoc.getJavaShadingVersion("1.2.3"));
+		assertEquals("123", Protoc.getJavaShadingVersion("123"));
+		assertEquals("_3_11_1", Protoc.getJavaShadingVersion("3.11.1"));
+		assertEquals("_3_11_1", Protoc.getJavaShadingVersion("_3_11_1"));
 	}
 
 	@Test

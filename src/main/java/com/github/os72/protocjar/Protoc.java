@@ -149,7 +149,7 @@ public class Protoc
 				FileInputStream is = null;
 				FileOutputStream os = null;
 				try {
-					version = javaShadingVersion(version);
+					version = getJavaShadingVersion(version);
 					tmpFile = File.createTempFile(file.getName(), null);
 					pw = new PrintWriter(tmpFile);
 					br = new BufferedReader(new FileReader(file));
@@ -173,16 +173,6 @@ public class Protoc
 					if (tmpFile != null) tmpFile.delete();
 				}
 			}
-		}
-	}
-
-	static String javaShadingVersion(String version) {
-		if (!version.contains(".")) {
-			return version;
-		} else if (version.length() <= 5) {
-			return version.replace(".", ""); // "1.2.3" -> "123"
-		} else {
-			return "_" + version.replace(".", "_");
 		}
 	}
 
@@ -434,6 +424,11 @@ public class Protoc
 		return detectorProps.getProperty("os.detected.classifier");
 	}
 
+	static String getJavaShadingVersion(String version) {
+		if (!version.contains(".")) return version;
+		else if (version.length() <= 5) return version.replace(".", ""); // "1.2.3" -> "123"
+		else return "_" + version.replace(".", "_");
+	}
 	static ProtocVersion getVersion(String spec) {
 		return ProtocVersion.getVersion(spec);
 	}
