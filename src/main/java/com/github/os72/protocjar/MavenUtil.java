@@ -16,6 +16,7 @@
 package com.github.os72.protocjar;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 
@@ -58,6 +59,9 @@ public class MavenUtil
 			String homeDir = System.getProperty("user.home");
 			return parseMavenSettings(new File(homeDir, ".m2/settings.xml"));
 		}
+		catch (FileNotFoundException e) {
+			log("No Maven user settings file found at " + e.getMessage() + ". Continuing with default settings.");
+		}
 		catch (Exception e) {
 			log(e);
 		}
@@ -95,6 +99,8 @@ public class MavenUtil
 					break;
 				}
 			}
+		} catch (IOException e) {
+			throw e;
 		}
 		catch (Exception e) {
 			throw new IOException(e);
