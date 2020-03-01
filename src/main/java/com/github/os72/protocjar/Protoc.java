@@ -137,6 +137,7 @@ public class Protoc
 
 	public static void doShading(File dir, String version) throws IOException {
 		if (dir.listFiles() == null) return;
+		String shadingVersion = getJavaShadingVersion(version);
 		for (File file : dir.listFiles()) {
 			if (file.isDirectory()) {
 				doShading(file, version);
@@ -149,13 +150,12 @@ public class Protoc
 				FileInputStream is = null;
 				FileOutputStream os = null;
 				try {
-					version = getJavaShadingVersion(version);
 					tmpFile = File.createTempFile(file.getName(), null);
 					pw = new PrintWriter(tmpFile);
 					br = new BufferedReader(new FileReader(file));
 					String line;
 					while ((line = br.readLine()) != null) {
-						pw.println(line.replace("com.google.protobuf", "com.github.os72.protobuf" + version));
+						pw.println(line.replace("com.google.protobuf", "com.github.os72.protobuf" + shadingVersion));
 					}
 					pw.close();
 					br.close();
@@ -427,8 +427,9 @@ public class Protoc
 	static String getJavaShadingVersion(String version) {
 		if (!version.contains(".")) return version;
 		else if (version.length() <= 5) return version.replace(".", ""); // "1.2.3" -> "123"
-		else return "_" + version.replace(".", "_");
+		else return "_" + version.replace(".", "_"); // "3.11.1" -> "_3_11_1"
 	}
+
 	static ProtocVersion getVersion(String spec) {
 		return ProtocVersion.getVersion(spec);
 	}
