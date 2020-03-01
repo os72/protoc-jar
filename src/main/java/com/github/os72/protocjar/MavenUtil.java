@@ -60,10 +60,10 @@ public class MavenUtil
 			return parseMavenSettings(new File(homeDir, ".m2/settings.xml"));
 		}
 		catch (FileNotFoundException e) {
-			log("No Maven user settings file found at " + e.getMessage() + ". Continuing with default settings.");
+			log("using default maven settings, didn't find user settings.xml");
 		}
 		catch (Exception e) {
-			log(e);
+			log("using default maven settings, " + e);
 		}
 		return new MavenSettings();
 	}
@@ -99,7 +99,8 @@ public class MavenUtil
 					break;
 				}
 			}
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			throw e;
 		}
 		catch (Exception e) {
