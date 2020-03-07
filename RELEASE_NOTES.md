@@ -1,6 +1,11 @@
 protoc-jar release notes
 ========================
 
+#### 3.11.4 (7-Mar-2020)
+* Upgrade to protoc 3.11.4
+* Shading fix for version 3.11.1 or higher (issue #78)
+* Improve log output when using default maven settings (issue #77)
+
 #### 3.11.1 (8-Dec-2019)
 * Upgrade to protoc 3.11.1
 * Small enhancement for shading naming convention
