@@ -112,6 +112,17 @@ os.detected.classifier: windows-x86_64
 Detected platform: windows-x86_64 (windows 8.1/amd64)
 ```
 
+#### Usage - executable via [Coursier](https://get-coursier.io/)
+
+```
+$ cs install --contrib protoc-jar
+$ protoc-jar -v2.4.1 --version
+protoc-jar: protoc version: 2.4.1, detected platform: linux-x86_64 (linux/amd64)
+protoc-jar: embedded: bin/2.4.1/protoc-2.4.1-linux-x86_64.exe
+protoc-jar: executing: [/tmp/protocjar1032666874436179543/bin/protoc.exe, --version]
+libprotoc 2.4.1
+```
+
 #### Usage - API
 ```java
 import com.github.os72.protocjar.Protoc;
