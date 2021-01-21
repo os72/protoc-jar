@@ -1,6 +1,6 @@
 /*
  * Copyright 2014 protoc-jar developers
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -17,7 +17,7 @@ package com.github.os72.protocjar;
 
 public class ProtocVersion
 {
-	public static final ProtocVersion PROTOC_VERSION = new ProtocVersion(null, null, "3.11.4");
+	public static final ProtocVersion PROTOC_VERSION = new ProtocVersion(null, null, "3.14.0");
 
 	public static ProtocVersion getVersion(String spec) {
 		if (!spec.startsWith("-v")) return null;
