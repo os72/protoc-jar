@@ -17,7 +17,7 @@ package com.github.os72.protocjar;
 
 public class ProtocVersion
 {
-	public static final ProtocVersion PROTOC_VERSION = new ProtocVersion(null, null, "3.14.0");
+	public static final ProtocVersion PROTOC_VERSION = new ProtocVersion(null, null, "3.17.3");
 
 	public static ProtocVersion getVersion(String spec) {
 		if (!spec.startsWith("-v")) return null;
