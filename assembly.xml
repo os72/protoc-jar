@@ -27,10 +27,14 @@
       	<include>3.11.4/*osx-x86_64*</include>
         <include>3.11.4/*osx-aarch_64*</include>
         <include>3.11.4/*windows-x86_64*</include>
-        <include>3.14.0/*linux-x86_64*</include>
-        <include>3.14.0/*osx-x86_64*</include>
-        <include>3.14.0/*osx-aarch_64*</include>
-        <include>3.14.0/*windows-x86_64*</include>
+        <include>3.17.3/*linux-ppcle_64*</include>
+        <include>3.17.3/*linux-aarch_64*</include>
+        <include>3.17.3/*linux-x86_32*</include>
+        <include>3.17.3/*linux-x86_64*</include>
+        <include>3.17.3/*osx-x86_64*</include>
+        <include>3.17.3/*osx-aarch_64*</include>
+        <include>3.17.3/*windows-x86_32*</include>
+        <include>3.17.3/*windows-x86_64*</include>
       </includes>
     </fileSet>
   </fileSets>
