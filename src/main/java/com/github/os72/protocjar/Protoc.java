@@ -327,7 +327,6 @@ public class Protoc
 		try {
 			log("downloading: " + srcUrl);
 			URLConnection con = srcUrl.openConnection();
-			con.setRequestProperty("User-Agent", "Mozilla"); // sonatype only returns proper maven-metadata.xml if this is set
 			con.setConnectTimeout(5000); // 5 sec timeout
 			con.setReadTimeout(5000); // 5 sec timeout
 			is = con.getInputStream();
