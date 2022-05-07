@@ -425,6 +425,7 @@ public class Protoc
 	}
 
 	static String getJavaShadingVersion(String version) {
+        if (!version.startsWith("_")) version = version.replaceFirst("_", "");
 		if (!version.contains(".")) return version;
 		else if (version.length() <= 5) return version.replace(".", ""); // "1.2.3" -> "123"
 		else return "_" + version.replace(".", "_"); // "3.11.1" -> "_3_11_1"
