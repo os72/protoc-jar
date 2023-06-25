@@ -39,6 +39,17 @@ public class MavenUtilTest
 	}
 
 	@Test
+	public void testParseMavenSettingsProxy() throws Exception {
+		log("testParseMavenSettingsProxy");
+		MavenSettings settings = MavenUtil.parseMavenSettings(new File("src/test/resources/maven-settings-skip-proxy.xml"));
+		assertEquals("http://mirrors.ibiblio.org/pub/mirrors/maven2/", settings.mMirrorUrl);
+		log(settings.mMirrorUrl);
+		assertNull(settings.mProxyHost);
+		assertEquals(8080, settings.mProxyPort);
+		log(settings.mProxyHost + ":" + settings.mProxyPort);
+	}
+
+	@Test
 	public void testParseReleaseBuild() throws Exception {
 		log("testParseReleaseBuild");
 		File mdFile = new File("src/test/resources/maven-metadata-release.xml");

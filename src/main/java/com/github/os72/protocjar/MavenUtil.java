@@ -90,6 +90,9 @@ public class MavenUtil
 				Node port = null;
 				for (int j = 0; j < proxy.getChildNodes().getLength(); j++) {
 					Node n = proxy.getChildNodes().item(j);
+					if (n.getNodeName().equals("active") && !Boolean.parseBoolean(n.getTextContent().trim())) {
+						break;
+					}
 					if (n.getNodeName().equals("host")) host = n;
 					if (n.getNodeName().equals("port")) port = n;
 				}
