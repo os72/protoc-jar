@@ -26,6 +26,11 @@
       	<include>3.11.4/*linux-x86_64*</include>
       	<include>3.11.4/*osx-x86_64*</include>
       	<include>3.11.4/*windows-x86_64*</include>
+      	<include>3.21.6/*linux-x86_64*</include>
+      	<include>3.21.6/*linux-aarch_64*</include>
+      	<include>3.21.6/*osx-x86_64*</include>
+      	<include>3.21.6/*osx-aarch_64*</include>
+      	<include>3.21.6/*windows-x86_64*</include>
       </includes>
     </fileSet>
   </fileSets>
