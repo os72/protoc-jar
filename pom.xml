@@ -5,7 +5,7 @@
   <groupId>com.github.os72</groupId>
   <artifactId>protoc-jar</artifactId>
   <packaging>jar</packaging>
-  <version>3.11.4</version>
+  <version>3.21.6</version>
   <name>protoc-jar</name>
   <url>https://github.com/os72/protoc-jar</url>
   <description>Protocol Buffers compiler - executable JAR and API</description>
@@ -54,8 +54,8 @@
 		  <artifactId>maven-compiler-plugin</artifactId>
 		  <version>3.0</version>
 		  <configuration>
-			<source>1.5</source>
-			<target>1.5</target>
+			<source>1.8</source>
+			<target>1.8</target>
 		  </configuration>
 		</plugin>
 		<plugin>

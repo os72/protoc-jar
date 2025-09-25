@@ -1,6 +1,12 @@
 protoc-jar release notes
 ========================
 
+#### 3.21.6 (22-Sep-2025)
+* Upgrade to protoc 3.21.6
+* Added ARM64 support for macOS (osx-aarch_64) and Linux (linux-aarch_64)
+* Enhanced multi-platform support with comprehensive binary coverage
+* Updated Java compilation target from 1.5 to 1.8 for modern compatibility
+
 #### 3.11.4 (7-Mar-2020)
 * Upgrade to protoc 3.11.4
 * Shading fix for version 3.11.1 or higher (issue #78)
