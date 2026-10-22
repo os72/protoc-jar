@@ -80,7 +80,11 @@ public class MavenUtil
 				Element mirror = (Element)mirrorList.item(i);
 				String url = mirror.getElementsByTagName("url").item(0).getTextContent().trim();
 				String mirrorOf = mirror.getElementsByTagName("mirrorOf").item(0).getTextContent().trim();
-				if (mirrorOf.equals("central") || mirrorOf.contains("*")) settings.mMirrorUrl = url;
+				if (mirrorOf.equals("central")) {
+					settings.mMirrorUrl = url;
+					break;
+				}
+				if (settings.mMirrorUrl == null && matchesCentralMirror(mirrorOf)) settings.mMirrorUrl = url;
 			}
 			
 			NodeList proxyList = xmlDoc.getDocumentElement().getElementsByTagName("proxy");
@@ -107,6 +111,17 @@ public class MavenUtil
 			throw new IOException(e);
 		}
 		return settings;
+	}
+
+	private static boolean matchesCentralMirror(String mirrorOf) {
+		boolean matches = false;
+		for (String repository : mirrorOf.split(",")) {
+			if (repository.equals("!central")) return false;
+			if (repository.equals("central")) return true;
+			// Central is external and uses HTTPS, so external:http:* does not match.
+			if (repository.equals("*") || repository.equals("external:*")) matches = true;
+		}
+		return matches;
 	}
 
 	// find last build (if any) from maven-metadata.xml
