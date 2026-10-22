@@ -19,14 +19,65 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.Writer;
 import java.util.Properties;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import com.github.os72.protocjar.MavenUtil.MavenSettings;
 
 public class MavenUtilTest
 {
+	@Rule
+	public TemporaryFolder temporaryFolder = new TemporaryFolder();
+
+	@Test
+	public void testHttpBlockerDoesNotMatchHttpsCentral() throws Exception {
+		MavenSettings settings = parseMirrors("external:http:*");
+		assertNull(settings.mMirrorUrl);
+		assertEquals("https://repo.maven.apache.org/maven2/", settings.mCentralUrl);
+	}
+
+	@Test
+	public void testCentralMirrorPatterns() throws Exception {
+		String[] matches = {"*", "external:*", "other,central", "!other,*", "external:http:*,*", "central,!central"};
+		for (String mirrorOf : matches) {
+			assertEquals(mirrorOf, "https://mirror0.example/", parseMirrors(mirrorOf).mMirrorUrl);
+		}
+		String[] exclusions = {"other", "*,!central", "!central,external:*", "!central,central", "some*repo", "!other, *"};
+		for (String mirrorOf : exclusions) {
+			assertNull(mirrorOf, parseMirrors(mirrorOf).mMirrorUrl);
+		}
+	}
+
+	@Test
+	public void testMirrorSelectionPrecedence() throws Exception {
+		assertEquals("https://mirror0.example/", parseMirrors("*", "external:*").mMirrorUrl);
+		assertEquals("https://mirror1.example/", parseMirrors("*", "central").mMirrorUrl);
+		assertEquals("https://mirror0.example/", parseMirrors("central", "*").mMirrorUrl);
+		assertEquals("https://mirror1.example/", parseMirrors("external:http:*", "*").mMirrorUrl);
+		assertEquals("https://mirror0.example/", parseMirrors("*", "external:http:*").mMirrorUrl);
+	}
+
+	private MavenSettings parseMirrors(String... patterns) throws Exception {
+		File settingsFile = temporaryFolder.newFile();
+		Writer writer = new FileWriter(settingsFile);
+		try {
+			writer.write("<settings><mirrors>");
+			for (int i = 0; i < patterns.length; i++) {
+				writer.write("<mirror><url>https://mirror" + i + ".example/</url><mirrorOf>" + patterns[i] + "</mirrorOf></mirror>");
+			}
+			writer.write("</mirrors></settings>");
+		}
+		finally {
+			writer.close();
+		}
+		return MavenUtil.parseMavenSettings(settingsFile);
+	}
+
 	@Test
 	public void testParseMavenSettings() throws Exception {
 		log("testParseMavenSettings");
