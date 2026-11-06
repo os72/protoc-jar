@@ -242,16 +242,19 @@ public class Protoc
 		}
 		
 		// look on maven central
+		IOException downloadFailure = null;
 		for (String downloadPath : sDdownloadPaths) {
 			try {
 				File exeFile = downloadProtoc(protocVersion, downloadPath, true);
 				if (exeFile != null) return exeFile;
 			}
 			catch (IOException e) {
-				//log(e);
+				if (!(e instanceof FileNotFoundException)) downloadFailure = e;
 			}
 		}
 		
+		// A repository error does not mean that this platform is unsupported.
+		if (downloadFailure != null) throw downloadFailure;
 		return null;
 	}
 
